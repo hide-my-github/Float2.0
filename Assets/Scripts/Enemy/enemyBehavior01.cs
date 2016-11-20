@@ -1,14 +1,22 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class enemyBehavior01 : MonoBehaviour {
-
+	GameObject enePreFab;
     public int health;
     float speed;
+	public Text enemyText;
+	int enemyCount;
  
 	// Use this for initialization
+	void Awake() {
+		enemyText = GameObject.Find ("EnemyCount").GetComponent<Text> ();
+		enemyCount = int.Parse (enemyText.text) + 1;
+		enemyText.text = enemyCount.ToString ();
+	}
 	void Start () {
-        //negative so it's traveling downward
+		enePreFab = GameObject.Find ("EnemyBullet");
         speed = -5f;
 	}
 
@@ -30,7 +38,10 @@ public class enemyBehavior01 : MonoBehaviour {
         Destroy(col.gameObject);
         health--;
         if(health <= 0){
-            Destroy(this.gameObject);
+			enemyCount = int.Parse (enemyText.text) - 1;
+			enemyText.text = enemyCount.ToString ();
+			Destroy(this.gameObject);
         }
     }
+		
 }
