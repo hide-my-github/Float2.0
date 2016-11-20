@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+//Code from Unity tutorial: Survival shooter game video 9/10
 public class enemySpawn : MonoBehaviour
 {
 	public GameObject enemy;                // The enemy prefab to be spawned.
