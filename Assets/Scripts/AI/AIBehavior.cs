@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class AIBehavior : MonoBehaviour {
 
 	public GameObject launchPrefab2;
+	public Astar astar;
+	List<string> path;
+	public State State;
 
 	private string move;
 	float fireDelay = 0.5f;
@@ -13,35 +17,34 @@ public class AIBehavior : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+		astar = GetComponent<Astar> ();
+		State = GetComponent<State> ();
 	}
 
 	// Update is called once per frame
 	void Update() {
-
-		if (move == "moveUpLeft") {
-			moveUpLeft();
-		}
-		else if (move == "moveUpRight") {
-			moveUpRight();
-		}
-		else if (move == "moveDownLeft") {
-			moveDownLeft();
-		}
-		else if (move == "moveDownRight") {
-			moveDownRight();
-		}
-		else if (move == "moveUp") {
-			moveUp();
-		}
-		else if (move == "moveLeft") {
-			moveLeft();
-		}
-		else if (move == "moveDown") {
-			moveDown();
-		}
-		else if (move == "moveRight") {
-			moveRight();
+		//use a list of strings 
+		State initial = new State(transform.position);
+		path = astar.Aalgorithm(initial);
+		for (var j = path.GetEnumerator (); j.MoveNext ();) {
+			move = j.Current;
+			if (move == "moveUpLeft") {
+				moveUpLeft ();
+			} else if (move == "moveUpRight") {
+				moveUpRight ();
+			} else if (move == "moveDownLeft") {
+				moveDownLeft ();
+			} else if (move == "moveDownRight") {
+				moveDownRight ();
+			} else if (move == "moveUp") {
+				moveUp ();
+			} else if (move == "moveLeft") {
+				moveLeft ();
+			} else if (move == "moveDown") {
+				moveDown ();
+			} else if (move == "moveRight") {
+				moveRight ();
+			}
 		}
 	}
 

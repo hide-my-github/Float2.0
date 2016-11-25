@@ -36,6 +36,7 @@ public class State: MonoBehaviour {
 		good_moves.Add ("MoveDown");
 		good_moves.Add ("MoveLeft");
 		good_moves.Add ("MoveRight");
+		good_moves.Add ("DoNothing");
 		return good_moves;
 	}
 
