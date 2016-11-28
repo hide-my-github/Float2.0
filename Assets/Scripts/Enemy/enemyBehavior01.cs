@@ -2,12 +2,16 @@
 using UnityEngine.UI;
 using System.Collections;
 
+using System.Collections.Generic;
+
 public class enemyBehavior01 : MonoBehaviour {
 	GameObject enePreFab;
     public int health;
     float speed;
 	public Text enemyText;
 	int enemyCount;
+
+	enemySpawn thisList;
  
 	// Use this for initialization
 	void Awake() {
@@ -18,6 +22,7 @@ public class enemyBehavior01 : MonoBehaviour {
 	void Start () {
 		enePreFab = GameObject.Find ("EnemyBullet");
         speed = -5f;
+		thisList = GetComponent<enemySpawn> ();
 	}
 
     // Update is called once per frame
@@ -40,6 +45,7 @@ public class enemyBehavior01 : MonoBehaviour {
         if(health <= 0){
 			enemyCount = int.Parse (enemyText.text) - 1;
 			enemyText.text = enemyCount.ToString ();
+			thisList.listOfEnemies.Remove (this.gameObject);
 			Destroy(this.gameObject);
         }
     }
