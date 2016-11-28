@@ -17,35 +17,13 @@ public class AIBehavior : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		astar = GetComponent<Astar> ();
-		State = GetComponent<State> ();
+		//astar = GetComponent<Astar> ();
+		//State = GetComponent<State> ();
 	}
 
 	// Update is called once per frame
 	void Update() {
-		//use a list of strings 
-		State initial = new State(transform.position);
-		path = astar.Aalgorithm(initial);
-		for (var j = path.GetEnumerator (); j.MoveNext ();) {
-			move = j.Current;
-			if (move == "moveUpLeft") {
-				moveUpLeft ();
-			} else if (move == "moveUpRight") {
-				moveUpRight ();
-			} else if (move == "moveDownLeft") {
-				moveDownLeft ();
-			} else if (move == "moveDownRight") {
-				moveDownRight ();
-			} else if (move == "moveUp") {
-				moveUp ();
-			} else if (move == "moveLeft") {
-				moveLeft ();
-			} else if (move == "moveDown") {
-				moveDown ();
-			} else if (move == "moveRight") {
-				moveRight ();
-			}
-		}
+		
 	}
 
 	//FPS
@@ -58,6 +36,7 @@ public class AIBehavior : MonoBehaviour {
 			nextFire = 0.5f;
 			shoot();
 		}
+		Astar ();
 
 	}
 
@@ -79,44 +58,95 @@ public class AIBehavior : MonoBehaviour {
 		Physics2D.IgnoreCollision(launchThis.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
 	}
 
-	public void moveUpLeft(){
-		Vector2 pos = transform.position;
+	public void Astar () {
+		Debug.Log ("Here before A star");
+		//use a list of strings 
+		State initial = new State(this.gameObject.transform.position);
+		path = astar.Aalgorithm(initial);
+		Debug.Log ("After A*");
+		foreach (string item in path) { Debug.Log ((item)); }
+		Debug.Log ("Should print path");
+		for (var j = path.GetEnumerator (); j.MoveNext ();) {
+			move = j.Current;
+			apply_move (move, initial);
+		}
+		path.Clear ();
+	}
+
+	public void moveUpLeft(State state){
+		Vector2 pos = state.position;
 		pos += new Vector2(-0.1f, 0.1f);
 		transform.position = pos;
+		state.position = pos;
 	}
-	public void moveUpRight(){
+	public void moveUpRight(State state){
 		Vector2 pos = transform.position;
 		pos += new Vector2(0.1f, 0.1f);
 		transform.position = pos;
+		state.position = pos;
 	}
-	public void moveDownLeft(){
+	public void moveDownLeft(State state){
 		Vector2 pos = transform.position;
 		pos += new Vector2(-0.1f, -0.1f);
 		transform.position = pos;
+		state.position = pos;
 	}
-	public void moveDownRight(){
+	public void moveDownRight(State state){
 		Vector2 pos = transform.position;
 		pos += new Vector2(0.1f, -0.1f);
 		transform.position = pos;
+		state.position = pos;
 	}
-	public void moveUp(){
+	public void moveUp(State state){
 		Vector2 pos = transform.position;
 		pos += new Vector2(0.0f, 0.1f);
 		transform.position = pos;
+		state.position = pos;
 	}
-	public void moveDown(){
+	public void moveDown(State state){
 		Vector2 pos = transform.position;
 		pos += new Vector2(0.0f, -0.1f);
 		transform.position = pos;
+		state.position = pos;
 	}
-	public void moveLeft(){
+	public void moveLeft(State state){
 		Vector2 pos = transform.position;
 		pos += new Vector2(-0.1f, 0.0f);
 		transform.position = pos;
+		state.position = pos;
 	}
-	public void moveRight(){
+	public void moveRight(State state){
 		Vector2 pos = transform.position;
 		pos += new Vector2(0.1f, 0.0f);
 		transform.position = pos;
+		state.position = pos;
+	}
+
+	public void apply_move(string move, State state) {
+		//applies move for AI to do certain function
+		//only for simulation purposes
+		if (move == "moveUpLeft") {
+			moveUpLeft (state);
+		} else if (move == "moveUpRight") {
+			moveUpRight (state);
+		} else if (move == "moveDownLeft") {
+			moveDownLeft (state);
+		} else if (move == "moveDownRight") {
+			moveDownRight (state);
+		} else if (move == "moveUp") {
+			moveUp (state);
+		} else if (move == "moveLeft") {
+			moveLeft (state);
+		} else if (move == "moveDown") {
+			moveDown (state);
+		} else if (move == "moveRight") {
+			moveRight (state);
+		}
+		/*Type AImove = typeof(AIBehavior);
+		MethodInfo action = AImove.GetMethod (name);
+		if (action != null)
+			action.Invoke (AI, 0f);*/
 	}
 }
+
+	

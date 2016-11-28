@@ -9,6 +9,7 @@ using Priority_Queue;
 
 public class Astar : MonoBehaviour {
 
+	public GameObject Enemy;
 	//The class to be enqueued.
 	public class Info
 	{
@@ -20,9 +21,9 @@ public class Astar : MonoBehaviour {
 			info_state = state;
 		}
 	}
-
+	public AIBehavior AIBehavior;
 	public State State;
-	public State newState;
+	//public State newState;
 	//Queue
 	SimplePriorityQueue<Info> frontier;
 		
@@ -44,9 +45,11 @@ public class Astar : MonoBehaviour {
 	public enemySpawn eneScript;
 	public List<GameObject> eneList;
 
+
 	// Use this for initialization
 	void Start () {
-		//State = gameObject.GetComponent<State> ();
+
+		State = gameObject.AddComponent<State> ();
 		//newState = gameObject.GetComponent<State> ();
 		legal_actions = null;
 		newPos = new Vector2 ();
@@ -57,23 +60,27 @@ public class Astar : MonoBehaviour {
 		cost_so_far = new Dictionary<State, float> ();
 		path = new List<string> ();
 
-		eneScript = gameObject.AddComponent<enemySpawn> ();
 	}
 
 
 	// Update is called once per frame
 	void Update () {
-		eneList = eneScript.listOfEnemies;
+		
 	}
 
+	void FixedUpdate() {
+
+	}
 	public List<string> Aalgorithm(State state) {
-		initial_state = state.copy (state);
+		initial_state = new State(state.position);
 		came_from[initial_state] = null;
 		came_from_name[initial_state] = "";
 		cost_so_far[initial_state] = 0;
 		path.Add ("");
 		Info initial = new Info ("", initial_state);
 		frontier.Enqueue(initial, 0);
+
+		eneList = eneScript.listOfEnemies;
 
 		//while time() - start_time < limit { //if fixed step doesnt properly do what we want
 		while (frontier.Count != 0) {
@@ -82,28 +89,12 @@ public class Astar : MonoBehaviour {
 			current_state = current_info.info_state;
 			current_pos = current_state.position;
 
-			// 2 exit conditions; one checking for an enemy, another for no enemy in which case, all considered moves done
+			// 2 exit conditions; one checking for an enemy, another for no enemy in which case, remain in place dodging
 			if (eneList.Count != 0) {
 				GameObject enemyTarget = eneList [0];
 				Vector2 ene_pos = enemyTarget.transform.position;
 
-				if (current_pos.x == ene_pos.x) {	//some end goal like if max damage
-					string F_name = state_name;
-					State F_state = current_state;
-
-					while (came_from[F_state] != null) {
-						path.Add(F_name);
-						F_state = came_from[F_state];
-						F_name = came_from_name[F_state];
-					}
-					//path.Add(F_name); //gives "" dunno if want
-					path.Reverse();
-				}
-				//frontier.Clear ();
-				return path;
-			} else {
-				Vector2 dodge_pos = transform.position;
-				if (current_pos == dodge_pos) {
+				if (current_pos.x == ene_pos.x && this.gameObject.activeInHierarchy) {	
 					string F_name = state_name;
 					State F_state = current_state;
 
@@ -113,12 +104,28 @@ public class Astar : MonoBehaviour {
 						F_name = came_from_name[F_state];
 					}
 					path.Reverse();
-					//frontier.Clear ();
+					frontier.Clear ();
 					return path;
 				}
+			}
+					
+			Vector2 dodge_pos = transform.position;
+			if (current_pos == dodge_pos && this.gameObject.activeInHierarchy) {
+				string F_name = state_name;
+				State F_state = current_state;
+
+				while (came_from[F_state] != null) {
+					path.Add(F_name);
+					F_state = came_from[F_state];
+					F_name = came_from_name[F_state];
+				}
+				path.Reverse();
+				frontier.Clear ();
+				return path;
+			}
 				//path.Add(F_name); //gives "" dunno if want
 				//print(current_state)
-			}
+			
 
 
 			legal_actions = current_state.legal_moves();
@@ -126,8 +133,9 @@ public class Astar : MonoBehaviour {
 			for (var j = legal_actions.GetEnumerator (); j.MoveNext ();) {
 				//NEXT = Name, State effected by action, and Time cost
 				action_name = j.Current;
-				newState = current_state;
-				newState.apply_move(action_name);
+				Debug.Log (action_name);
+				State newState = new State(current_state.position);
+				AIBehavior.apply_move(action_name, newState);
 				newPos = newState.position;
 				distance = Vector2.Distance (current_state.position, newState.position);
 				new_cost = cost_so_far[current_state] + distance;
@@ -145,7 +153,7 @@ public class Astar : MonoBehaviour {
 		
 		//Failed to find a path
 		}
-		//frontier.Clear ();
+		frontier.Clear ();
 		return path;
 	}
 		//Almost like P5
