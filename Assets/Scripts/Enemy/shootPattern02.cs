@@ -37,9 +37,9 @@ public class shootPattern02 : MonoBehaviour {
 					nextFire = 2.0f;
 				}
 				Quaternion rotation = Quaternion.Euler(0,0,i);
-				Debug.Log ("rotation: " + rotation);
+				//Debug.Log ("rotation: " + rotation);
 				Vector3 targetDir = rotation * transform.up;
-				Debug.Log ("Direction: " + targetDir);
+				//Debug.Log ("Direction: " + targetDir);
 				targetDir.Normalize ();
 				targetDir *= fireVelocity;
 				launchThis.GetComponent<Rigidbody2D> ().velocity = targetDir;

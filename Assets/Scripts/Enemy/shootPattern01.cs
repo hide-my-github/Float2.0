@@ -31,9 +31,9 @@ public class shootPattern01 : MonoBehaviour {
 					GameObject launchThis = (GameObject)Instantiate (launchPrefab, transform.position, transform.rotation);
 					nextFire = 2.0f;
 					Quaternion rotation = Quaternion.Euler(0,0,i);
-					Debug.Log ("rotation: " + rotation);
+					//Debug.Log ("rotation: " + rotation);
 					Vector3 targetDir = rotation * transform.up;
-					Debug.Log ("Direction: " + targetDir);
+					//Debug.Log ("Direction: " + targetDir);
 					targetDir.Normalize ();
 					targetDir *= fireVelocity;
 					launchThis.GetComponent<Rigidbody2D> ().velocity = targetDir;
