@@ -45,7 +45,7 @@ public class enemyBehavior01 : MonoBehaviour {
         if(health <= 0){
 			enemyCount = int.Parse (enemyText.text) - 1;
 			enemyText.text = enemyCount.ToString ();
-			thisList.listOfEnemies.Remove (this.gameObject);
+			//thisList.listOfEnemies.Remove (this.gameObject);
 			Destroy(this.gameObject);
         }
     }
