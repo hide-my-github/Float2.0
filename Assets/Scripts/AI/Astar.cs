@@ -72,8 +72,7 @@ public class Astar: MonoBehaviour {
 		//colliders = new Collider2D[300]; //or some large allocation for space
 		//colliders = new List<Collider2D> ();
 	}
-
-
+		
 	// Update is called once per frame
 	void Update () {
 		
@@ -81,28 +80,32 @@ public class Astar: MonoBehaviour {
 
 	void FixedUpdate() {
 		eneList = eneScript.listOfEnemies;
+		//Debug.Log (": " + eneList.Count);
 	}
 
 	public List<string> Aalgorithm(State state) {
 		path.Clear ();
 	
 		initial_state = new State(state.position);
+		Debug.Log ("Initial State: " + initial_state.position);
 		came_from[initial_state] = null;
 		came_from_name[initial_state] = "";
 		cost_so_far[initial_state] = 0;
 		path.Add ("");
 		Info initial = new Info ("", initial_state);
 		frontier.Enqueue(initial, 0);
-
+		float limit = 0.02f;
+		float start_time = Time.time;
 		//eneList = eneScript.listOfEnemies;
 
 		//while time() - start_time < limit { //if fixed step doesnt properly do what we want
-		while (frontier.Count != 0) {
+		while (frontier.Count != 0 && Time.time-start_time < limit) {
 			Info current_info = frontier.Dequeue ();
 			state_name = current_info.action_name;
 			current_state = current_info.info_state;
 			current_pos = current_state.position;
 
+			//AIBehavior.moveUp (current_state);
 			//Debug.Log (eneList.Count);
 			// 2 exit conditions; one checking for an enemy, another for no enemy in which case, remain in place dodging
 
@@ -114,11 +117,12 @@ public class Astar: MonoBehaviour {
 			} else {
 				Vector2 dodge_pos = transform.position;
 				if (current_pos == dodge_pos && !Enemy.activeInHierarchy) {
-					Debug.Log ("Path B");
+//					Debug.Log ("Path B");
 					path = creatingPath (current_state, state_name);
 					return path;
 				}
 			}
+
 				//path.Add(F_name); //gives "" dunno if want
 				//print(current_state)
 			
@@ -128,6 +132,7 @@ public class Astar: MonoBehaviour {
 
 			for (var j = legal_actions.GetEnumerator (); j.MoveNext ();) {
 				//NEXT = Name, State effected by action, and Time cost
+				Debug.Log("Wat");
 				action_name = j.Current;
 				Debug.Log (action_name);
 				State newState = new State(current_state.position);

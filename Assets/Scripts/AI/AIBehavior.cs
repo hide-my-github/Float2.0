@@ -19,6 +19,9 @@ public class AIBehavior : MonoBehaviour {
 	void Start () {
 		//astar = GetComponent<Astar> ();
 		//State = GetComponent<State> ();
+		State = new State(this.transform.position);
+		//Debug.Log ("AI: " + this.transform.position);
+		//Debug.Log ("State: " + State.position);
 	}
 
 	// Update is called once per frame
@@ -39,7 +42,6 @@ public class AIBehavior : MonoBehaviour {
 		//Debug.Log ("before Astarpath");
 		Astar ();
 		//Debug.Log ("after Astarpath");
-
 	}
 
 	void OnCollisionEnter2D(Collision2D col)
@@ -62,13 +64,13 @@ public class AIBehavior : MonoBehaviour {
 	}
 
 	public void Astar () {
-		Debug.Log ("Here before A star");
+//		Debug.Log ("Here before A star");
 		//use a list of strings 
 		State initial = new State(this.gameObject.transform.position);
 		path = astar.Aalgorithm(initial);
-		Debug.Log ("After A*");
+//		Debug.Log ("After A*");
 		foreach (string item in path) { Debug.Log ((item)); }
-		Debug.Log ("Should print path");
+//		Debug.Log ("Should print path");
 		for (var j = path.GetEnumerator (); j.MoveNext ();) {
 			move = j.Current;
 			apply_move (move, initial);
