@@ -7,9 +7,10 @@ using System.Linq;
 using System.Text;
 using Priority_Queue;
 
-public class Astar : MonoBehaviour {
+public class Astar: MonoBehaviour {
 
 	public GameObject Enemy;
+	public GameObject EnemyBullet;
 	//The class to be enqueued.
 	public class Info
 	{
@@ -22,12 +23,13 @@ public class Astar : MonoBehaviour {
 		}
 	}
 	public AIBehavior AIBehavior;
-	public State State;
+	//public State State;
 	//public State newState;
 	//Queue
 	SimplePriorityQueue<Info> frontier;
 		
 	public List<string> path;
+	List<string> path_maker;
 	public Dictionary<State, State> came_from;
 	public Dictionary<State, string> came_from_name; //string name of action that brought it to that state
 	public Dictionary<State, float> cost_so_far; //distance
@@ -45,11 +47,17 @@ public class Astar : MonoBehaviour {
 	public enemySpawn eneScript;
 	public List<GameObject> eneList;
 
-
+	Collider2D[] colliders;
+	Collider2D testcol;
+	Vector2 testpos;
+	Vector2 colliderpos;
+	//List<Collider2D> colliders;
+	int i = 0;
+	float timer = 0;
 	// Use this for initialization
 	void Start () {
 
-		State = gameObject.AddComponent<State> ();
+		//State = gameObject.AddComponent<State> ();
 		//newState = gameObject.GetComponent<State> ();
 		legal_actions = null;
 		newPos = new Vector2 ();
@@ -59,7 +67,10 @@ public class Astar : MonoBehaviour {
 		came_from_name = new Dictionary<State, string> ();
 		cost_so_far = new Dictionary<State, float> ();
 		path = new List<string> ();
+		path_maker = new List<string> ();
 
+		//colliders = new Collider2D[300]; //or some large allocation for space
+		//colliders = new List<Collider2D> ();
 	}
 
 
@@ -69,9 +80,12 @@ public class Astar : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
-
+		eneList = eneScript.listOfEnemies;
 	}
+
 	public List<string> Aalgorithm(State state) {
+		path.Clear ();
+	
 		initial_state = new State(state.position);
 		came_from[initial_state] = null;
 		came_from_name[initial_state] = "";
@@ -80,7 +94,7 @@ public class Astar : MonoBehaviour {
 		Info initial = new Info ("", initial_state);
 		frontier.Enqueue(initial, 0);
 
-		eneList = eneScript.listOfEnemies;
+		//eneList = eneScript.listOfEnemies;
 
 		//while time() - start_time < limit { //if fixed step doesnt properly do what we want
 		while (frontier.Count != 0) {
@@ -89,39 +103,21 @@ public class Astar : MonoBehaviour {
 			current_state = current_info.info_state;
 			current_pos = current_state.position;
 
+			//Debug.Log (eneList.Count);
 			// 2 exit conditions; one checking for an enemy, another for no enemy in which case, remain in place dodging
-			if (eneList.Count != 0) {
-				GameObject enemyTarget = eneList [0];
-				Vector2 ene_pos = enemyTarget.transform.position;
 
-				if (current_pos.x == ene_pos.x && this.gameObject.activeInHierarchy) {	
-					string F_name = state_name;
-					State F_state = current_state;
-
-					while (came_from[F_state] != null) {
-						path.Add(F_name);
-						F_state = came_from[F_state];
-						F_name = came_from_name[F_state];
-					}
-					path.Reverse();
-					frontier.Clear ();
+			Vector2 ene_pos = Enemy.transform.position;
+			if (current_pos.x == ene_pos.x && this.gameObject.activeInHierarchy) {	
+				Debug.Log ("Path A");
+				path = creatingPath (current_state, state_name);
+				return path;
+			} else {
+				Vector2 dodge_pos = transform.position;
+				if (current_pos == dodge_pos && !Enemy.activeInHierarchy) {
+					Debug.Log ("Path B");
+					path = creatingPath (current_state, state_name);
 					return path;
 				}
-			}
-					
-			Vector2 dodge_pos = transform.position;
-			if (current_pos == dodge_pos && this.gameObject.activeInHierarchy) {
-				string F_name = state_name;
-				State F_state = current_state;
-
-				while (came_from[F_state] != null) {
-					path.Add(F_name);
-					F_state = came_from[F_state];
-					F_name = came_from_name[F_state];
-				}
-				path.Reverse();
-				frontier.Clear ();
-				return path;
 			}
 				//path.Add(F_name); //gives "" dunno if want
 				//print(current_state)
@@ -150,27 +146,58 @@ public class Astar : MonoBehaviour {
 					came_from_name[newState] = action_name;
 				}
 			}
-		
+			
 		//Failed to find a path
 		}
+		Debug.Log ("path C");
 		frontier.Clear ();
+		//path = creatingPath (current_state, state_name);
 		return path;
 	}
 		//Almost like P5
 	private float heuristic(State current, State newState) {
+		
+		//for group of bullets around playerL
+		//if any have same position, return inf
+		testpos = newState.position;
+		colliders = Physics2D.OverlapCircleAll(testpos, 2, 7, -Mathf.Infinity, Mathf.Infinity);
 
-		if (!newState.isAlive()) {
-				return Mathf.Infinity;
+		if (colliders.Length != 0) {
+			for (var j = colliders.GetEnumerator (); j.MoveNext ();) {
+				testcol = (Collider2D)j.Current;
+				colliderpos = testcol.transform.position;
+				if (colliderpos == testpos) {
+					Array.Clear (colliders, 0, colliders.Length);
+					return Mathf.Infinity;
+				} 
+
+			}
 		}
-		Vector2 current_heur_check = current.position;
-			//copy = current_state;
-			//copy2_name = action[0];
-			//copy2 = action[1].copy();
 
-			//check first if enemy x position is around same position?
-			/*if {
-			return Mathf.Infinity;
-		}*/
+		//need a collider check to see if any actually collide with main 
+			
+			
+
 		return 0;
+	}
+
+	private float time() {
+		return Time.deltaTime;
+	}
+
+	private List<string> creatingPath(State current, string name) {
+		path_maker.Clear ();
+		string F_name = name;
+		//State F_state = current_state;
+		State F_state = current;
+
+		while (came_from[F_state] != null) {
+			path_maker.Add(F_name);
+			F_state = came_from[F_state];
+			F_name = came_from_name[F_state];
+		}
+		path_maker.Reverse();
+		frontier.Clear ();
+		return path_maker;
 	}
 }

@@ -3,17 +3,14 @@ using System.Collections;
 //using System.Reflection;
 using System.Collections.Generic;
 
-public class State: MonoBehaviour{
+public class State{
 
-	public GameObject AI;
 	public Vector2 position;
 
 	public State(Vector2 pos) {
 		position = pos;
 	}
-
-
-
+		
 	// Use this for initialization
 	void Start () {
 	}
@@ -32,14 +29,7 @@ public class State: MonoBehaviour{
 		good_moves.Add ("DoNothing");
 		return good_moves;
 	}
-
-	public bool isAlive() {
-		if (AI.activeInHierarchy) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+		
 
 
 	// Update is called once per frame

@@ -36,7 +36,9 @@ public class AIBehavior : MonoBehaviour {
 			nextFire = 0.5f;
 			shoot();
 		}
+		//Debug.Log ("before Astarpath");
 		Astar ();
+		//Debug.Log ("after Astarpath");
 
 	}
 
@@ -45,6 +47,7 @@ public class AIBehavior : MonoBehaviour {
 		//Debug.Log("HIT");
 		Destroy(col.gameObject);
 		GameObject.Find("_SCRIPTS_").GetComponent<hitsScript>().incrementHits();
+
 	}
 
 
@@ -147,6 +150,8 @@ public class AIBehavior : MonoBehaviour {
 		if (action != null)
 			action.Invoke (AI, 0f);*/
 	}
+
+
 }
 
 	

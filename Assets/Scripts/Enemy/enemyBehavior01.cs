@@ -39,7 +39,7 @@ public class enemyBehavior01 : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D col)
     {
-        //Debug.Log("HIT");
+        Debug.Log("HIT");
         Destroy(col.gameObject);
         health--;
         if(health <= 0){
