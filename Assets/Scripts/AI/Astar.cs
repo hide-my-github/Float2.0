@@ -87,13 +87,14 @@ public class Astar: MonoBehaviour {
 		path.Clear ();
 	
 		initial_state = new State(state.position);
-		Debug.Log ("Initial State: " + initial_state.position);
+		//Debug.Log ("Initial State: " + initial_state.position);
 		came_from[initial_state] = null;
 		came_from_name[initial_state] = "";
 		cost_so_far[initial_state] = 0;
 		path.Add ("");
-		Info initial = new Info ("", initial_state);
+		Info initial = new Info ("balls", initial_state);
 		frontier.Enqueue(initial, 0);
+		Debug.Log ("Blah: "+frontier.First.action_name);
 		float limit = 0.02f;
 		float start_time = Time.time;
 		//eneList = eneScript.listOfEnemies;
@@ -118,6 +119,10 @@ public class Astar: MonoBehaviour {
 				Vector2 dodge_pos = transform.position;
 				if (current_pos == dodge_pos && !Enemy.activeInHierarchy) {
 //					Debug.Log ("Path B");
+					//AIBehavior.moveUp (current_state);
+					//AIBehavior.moveRight (current_state);
+					//AIBehavior.moveDown (current_state);
+					//AIBehavior.moveLeft (current_state);
 					path = creatingPath (current_state, state_name);
 					return path;
 				}
@@ -127,12 +132,13 @@ public class Astar: MonoBehaviour {
 				//print(current_state)
 			
 
+			Debug.Log("Wat1");
 
 			legal_actions = current_state.legal_moves();
 
 			for (var j = legal_actions.GetEnumerator (); j.MoveNext ();) {
 				//NEXT = Name, State effected by action, and Time cost
-				Debug.Log("Wat");
+				Debug.Log("Wat2");
 				action_name = j.Current;
 				Debug.Log (action_name);
 				State newState = new State(current_state.position);
