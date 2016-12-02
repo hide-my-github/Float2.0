@@ -39,6 +39,8 @@ public class AIBehavior : MonoBehaviour {
 		//Debug.Log ("before Astarpath");
 		Astar ();
 		//Debug.Log ("after Astarpath");
+		//idea.  if object is already on path and new astar has outputted a newer path, get rid of the old one
+
 
 	}
 
@@ -77,7 +79,7 @@ public class AIBehavior : MonoBehaviour {
 	}
 
 	public void moveUpLeft(State state){
-		Vector2 pos = state.position;
+		Vector2 pos = transform.position;
 		pos += new Vector2(-0.1f, 0.1f);
 		transform.position = pos;
 		state.position = pos;
@@ -145,10 +147,6 @@ public class AIBehavior : MonoBehaviour {
 		} else if (move == "moveRight") {
 			moveRight (state);
 		}
-		/*Type AImove = typeof(AIBehavior);
-		MethodInfo action = AImove.GetMethod (name);
-		if (action != null)
-			action.Invoke (AI, 0f);*/
 	}
 
 
