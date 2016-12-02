@@ -77,7 +77,7 @@ public class AIBehavior : MonoBehaviour {
 	}
 
 	public void moveUpLeft(State state){
-		Vector2 pos = state.position;
+		Vector2 pos = transform.position;
 		pos += new Vector2(-0.1f, 0.1f);
 		transform.position = pos;
 		state.position = pos;
