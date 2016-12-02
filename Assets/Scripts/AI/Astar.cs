@@ -119,8 +119,23 @@ public class Astar: MonoBehaviour {
 			Vector2 ene_pos = Enemy.transform.position;
 			if (current_pos.x == ene_pos.x) {	
 				Debug.Log ("Path A");
+
+				GameObject[] bulletArray = GameObject.FindGameObjectsWithTag ("EnemyBullet");
+				Debug.Log ("Prior: " + bulletArray.Length);
+				List<GameObject> nearbyThreats = keepThreatsIntoList (current_pos, bulletArray);
+				Debug.Log ("Post: " + nearbyThreats.Count);
+				//Failed to find a path
+
 				path = creatingPath (current_state, state_name);
 				return path;
+				/*
+				List<string> temp = new List<string>();
+				temp.Add ("moveUp");
+				temp.Add ("moveRight");
+				return temp;
+				*/
+
+
 			} 
 			/*
 			Vector2 dodge_pos = transform.position;
@@ -154,11 +169,7 @@ public class Astar: MonoBehaviour {
 			}
 
 
-			GameObject[] bulletArray = GameObject.FindGameObjectsWithTag ("EnemyBullet");
-			Debug.Log ("Prior: " + bulletArray.Length);
-			List<GameObject> nearbyThreats = keepThreatsIntoList (current_pos, bulletArray);
-			Debug.Log ("Post: " + nearbyThreats.Count);
-			//Failed to find a path
+
 		}
 		Debug.Log ("path C");
 		frontier.Clear ();
