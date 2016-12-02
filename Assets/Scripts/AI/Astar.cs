@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -27,7 +27,7 @@ public class Astar: MonoBehaviour {
 	//public State newState;
 	//Queue
 	SimplePriorityQueue<Info> frontier;
-		
+
 	public List<string> path;
 	List<string> path_maker;
 	public Dictionary<State, State> came_from;
@@ -72,41 +72,37 @@ public class Astar: MonoBehaviour {
 		//colliders = new Collider2D[300]; //or some large allocation for space
 		//colliders = new List<Collider2D> ();
 	}
-		
+
+
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 
 	void FixedUpdate() {
 		eneList = eneScript.listOfEnemies;
-		//Debug.Log (": " + eneList.Count);
 	}
 
 	public List<string> Aalgorithm(State state) {
 		path.Clear ();
-	
+
 		initial_state = new State(state.position);
-		//Debug.Log ("Initial State: " + initial_state.position);
 		came_from[initial_state] = null;
 		came_from_name[initial_state] = "";
 		cost_so_far[initial_state] = 0;
 		path.Add ("");
-		Info initial = new Info ("balls", initial_state);
+		Info initial = new Info ("", initial_state);
 		frontier.Enqueue(initial, 0);
-		Debug.Log ("Blah: "+frontier.First.action_name);
-		float limit = 0.02f;
-		float start_time = Time.time;
+
 		//eneList = eneScript.listOfEnemies;
 
 		//while time() - start_time < limit { //if fixed step doesnt properly do what we want
-		while (frontier.Count != 0 && Time.time-start_time < limit) {
+		while (frontier.Count != 0) {
 			Info current_info = frontier.Dequeue ();
 			state_name = current_info.action_name;
 			current_state = current_info.info_state;
 			current_pos = current_state.position;
 
-			//AIBehavior.moveUp (current_state);
 			//Debug.Log (eneList.Count);
 			// 2 exit conditions; one checking for an enemy, another for no enemy in which case, remain in place dodging
 
@@ -119,26 +115,33 @@ public class Astar: MonoBehaviour {
 				Vector2 dodge_pos = transform.position;
 				if (current_pos == dodge_pos && !Enemy.activeInHierarchy) {
 //					Debug.Log ("Path B");
-					//AIBehavior.moveUp (current_state);
-					//AIBehavior.moveRight (current_state);
-					//AIBehavior.moveDown (current_state);
-					//AIBehavior.moveLeft (current_state);
+
+
+					GameObject[] bulletArray = GameObject.FindGameObjectsWithTag ("EnemyBullet");
+					Debug.Log ("Prior: " + bulletArray.Length);
+					List<GameObject> nearbyThreats = keepThreatsIntoList (current_pos, bulletArray);
+					Debug.Log ("Post: " + nearbyThreats.Count);
+
+
 					path = creatingPath (current_state, state_name);
 					return path;
+					/*
+					List<string> temp = new List<string>();
+					temp.Add ("moveUp");
+					temp.Add ("moveRight");
+					return temp;
+					*/
 				}
 			}
+			//path.Add(F_name); //gives "" dunno if want
+			//print(current_state)
 
-				//path.Add(F_name); //gives "" dunno if want
-				//print(current_state)
-			
 
-			Debug.Log("Wat1");
 
 			legal_actions = current_state.legal_moves();
 
 			for (var j = legal_actions.GetEnumerator (); j.MoveNext ();) {
 				//NEXT = Name, State effected by action, and Time cost
-				Debug.Log("Wat2");
 				action_name = j.Current;
 				Debug.Log (action_name);
 				State newState = new State(current_state.position);
@@ -157,17 +160,17 @@ public class Astar: MonoBehaviour {
 					came_from_name[newState] = action_name;
 				}
 			}
-			
-		//Failed to find a path
+
+			//Failed to find a path
 		}
 		Debug.Log ("path C");
 		frontier.Clear ();
 		//path = creatingPath (current_state, state_name);
 		return path;
 	}
-		//Almost like P5
+	//Almost like P5
 	private float heuristic(State current, State newState) {
-		
+
 		//for group of bullets around playerL
 		//if any have same position, return inf
 		testpos = newState.position;
@@ -186,8 +189,8 @@ public class Astar: MonoBehaviour {
 		}
 
 		//need a collider check to see if any actually collide with main 
-			
-			
+
+
 
 		return 0;
 	}
@@ -197,12 +200,14 @@ public class Astar: MonoBehaviour {
 	}
 
 	private List<string> creatingPath(State current, string name) {
+//		Debug.Log ("HUH?");
 		path_maker.Clear ();
 		string F_name = name;
 		//State F_state = current_state;
 		State F_state = current;
 
 		while (came_from[F_state] != null) {
+			Debug.Log ("1");
 			path_maker.Add(F_name);
 			F_state = came_from[F_state];
 			F_name = came_from_name[F_state];
@@ -210,5 +215,17 @@ public class Astar: MonoBehaviour {
 		path_maker.Reverse();
 		frontier.Clear ();
 		return path_maker;
+	}
+
+	private List<GameObject> keepThreatsIntoList(Vector2 pos, GameObject[] array){
+		List<GameObject> list = new List<GameObject>();
+		//Vector3 v3pos = new Vector3 (pos.x, pos.y, 0);
+		foreach (GameObject bullet in array) {
+			float dist = Vector2.Distance (pos, bullet.transform.position);
+			if (dist <= 3.0f) {
+				list.Add(bullet);
+			}
+		}
+		return list; 
 	}
 }

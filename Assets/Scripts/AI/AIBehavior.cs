@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -19,14 +19,11 @@ public class AIBehavior : MonoBehaviour {
 	void Start () {
 		//astar = GetComponent<Astar> ();
 		//State = GetComponent<State> ();
-		State = new State(this.transform.position);
-		//Debug.Log ("AI: " + this.transform.position);
-		//Debug.Log ("State: " + State.position);
 	}
 
 	// Update is called once per frame
 	void Update() {
-		
+
 	}
 
 	//FPS
@@ -42,6 +39,7 @@ public class AIBehavior : MonoBehaviour {
 		//Debug.Log ("before Astarpath");
 		Astar ();
 		//Debug.Log ("after Astarpath");
+
 	}
 
 	void OnCollisionEnter2D(Collision2D col)
@@ -155,5 +153,3 @@ public class AIBehavior : MonoBehaviour {
 
 
 }
-
-	
