@@ -23,12 +23,44 @@ public class AIBehavior : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
-
+		if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.A)) {
+			moveUpLeft();
+		}
+		else if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D)) {
+			moveUpRight();
+		}
+		else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.A)) {
+			moveDownLeft();
+		}
+		else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.D))
+		{
+			moveDownRight();
+		}
+		else if (Input.GetKey(KeyCode.W)){
+			moveUp();
+		}
+		else if (Input.GetKey(KeyCode.A)) {
+			moveLeft();
+		}
+		else if (Input.GetKey(KeyCode.S)) {
+			moveDown();
+		}
+		else if (Input.GetKey(KeyCode.D)) {
+			moveRight();
+		}
 	}
 
 	//FPS
 	void FixedUpdate()
 	{
+		Debug.Log ("A: "+astar.good_moves.Count);
+		if (this.transform.position.x <= -2.0f) {
+			astar.good_moves.Remove ("moveUpLeft");
+			astar.good_moves.Remove ("moveLeft");
+			astar.good_moves.Remove ("moveDownLeft");
+			Debug.Log ("B: "+astar.good_moves.Count);
+		}
+
 		nextFire -= Time.deltaTime;
 
 		if (nextFire <= 0.0f)
@@ -67,7 +99,7 @@ public class AIBehavior : MonoBehaviour {
 		State initial = new State(this.gameObject.transform.position);
 		path = astar.Aalgorithm(initial);
 //		Debug.Log ("After A*");
-		foreach (string item in path) { Debug.Log ((item)); }
+//		foreach (string item in path) { Debug.Log ((item)); }
 //		Debug.Log ("Should print path");
 		for (var j = path.GetEnumerator (); j.MoveNext ();) {
 			move = j.Current;
@@ -151,5 +183,45 @@ public class AIBehavior : MonoBehaviour {
 			action.Invoke (AI, 0f);*/
 	}
 
+	public void moveUpLeft(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(-0.1f, 0.1f);
+		transform.position = pos;
+	}
+	public void moveUpRight(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(0.1f, 0.1f);
+		transform.position = pos;
+	}
+	public void moveDownLeft(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(-0.1f, -0.1f);
+		transform.position = pos;
+	}
+	public void moveDownRight(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(0.1f, -0.1f);
+		transform.position = pos;
+	}
+	public void moveUp(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(0.0f, 0.1f);
+		transform.position = pos;
+	}
+	public void moveDown(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(0.0f, -0.1f);
+		transform.position = pos;
+	}
+	public void moveLeft(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(-0.1f, 0.0f);
+		transform.position = pos;
+	}
+	public void moveRight(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(0.1f, 0.0f);
+		transform.position = pos;
+	}
 
 }

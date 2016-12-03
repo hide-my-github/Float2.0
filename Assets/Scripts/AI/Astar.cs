@@ -34,7 +34,7 @@ public class Astar: MonoBehaviour {
 	public Dictionary<State, string> came_from_name; //string name of action that brought it to that state
 	public Dictionary<State, float> cost_so_far; //distance
 
-	List<string> good_moves;
+	public List<string> good_moves;
 	string action_name = null;
 	float distance = 0.0f;
 	float new_cost = 0.0f;
@@ -87,6 +87,42 @@ public class Astar: MonoBehaviour {
 
 	void FixedUpdate() {
 		eneList = eneScript.listOfEnemies;
+
+		//left wall
+		if (this.transform.position.x <= -5.75f) {
+			good_moves.Remove ("moveUpLeft");
+			good_moves.Remove ("moveLeft");
+			good_moves.Remove ("moveDownLeft");
+		}
+		//right wall
+		else if (this.transform.position.x >= 5.75f) {
+			good_moves.Remove ("moveUpRight");
+			good_moves.Remove ("moveRight");
+			good_moves.Remove ("moveDownRight");
+		}
+		//top wall
+		else if (this.transform.position.y >= 4.50f) {
+			good_moves.Remove ("moveUpLeft");
+			good_moves.Remove ("moveUp");
+			good_moves.Remove ("moveUpRight");
+		}
+		//bottom wall
+		else if (this.transform.position.y <= -4.50f) {
+			good_moves.Remove ("moveDownLeft");
+			good_moves.Remove ("moveDown");
+			good_moves.Remove ("moveDownRight");
+		} else {
+			good_moves.Clear ();
+			good_moves.Add ("moveUpLeft");
+			good_moves.Add ("moveUpRight");
+			good_moves.Add ("moveDownLeft");
+			good_moves.Add ("moveDownRight");
+			good_moves.Add ("moveUp");
+			good_moves.Add ("moveDown");
+			good_moves.Add ("moveLeft");
+			good_moves.Add ("moveRight");
+			good_moves.Add ("doNothing");
+		}
 	}
 
 	public List<string> Aalgorithm(State state) {
@@ -119,11 +155,6 @@ public class Astar: MonoBehaviour {
 			Vector2 ene_pos = Enemy.transform.position;
 			if (current_pos.x == ene_pos.x) {	
 				Debug.Log ("Path A");
-
-				GameObject[] bulletArray = GameObject.FindGameObjectsWithTag ("EnemyBullet");
-				Debug.Log ("Prior: " + bulletArray.Length);
-				List<GameObject> nearbyThreats = keepThreatsIntoList (current_pos, bulletArray);
-				Debug.Log ("Post: " + nearbyThreats.Count);
 				//Failed to find a path
 
 				path = creatingPath (current_state, state_name);
@@ -134,9 +165,12 @@ public class Astar: MonoBehaviour {
 				temp.Add ("moveRight");
 				return temp;
 				*/
+			}
+			GameObject[] bulletArray = GameObject.FindGameObjectsWithTag ("EnemyBullet");
+			//Debug.Log ("Prior: " + bulletArray.Length);
+			List<GameObject> nearbyThreats = keepThreatsIntoList (current_pos, bulletArray);
 
-
-			} 
+			//Debug.Log ("Post: " + nearbyThreats.Count);
 			/*
 			Vector2 dodge_pos = transform.position;
 			if (current_pos == dodge_pos && !Enemy.activeSelf) {
@@ -171,7 +205,7 @@ public class Astar: MonoBehaviour {
 
 
 		}
-		Debug.Log ("path C");
+//		Debug.Log ("path C");
 		frontier.Clear ();
 		//path = creatingPath (current_state, state_name);
 		return path;
@@ -201,7 +235,7 @@ public class Astar: MonoBehaviour {
 		//need a collider check to see if any actually collide with main 
 
 		float distance = Mathf.Abs(newState.position.x - ene_position.x);
-		Debug.Log ("distance: " + distance);
+//		Debug.Log ("distance: " + distance);
 		return distance;
 	}
 
@@ -217,7 +251,6 @@ public class Astar: MonoBehaviour {
 		State F_state = current;
 
 		while (came_from[F_state] != null) {
-			Debug.Log ("1");
 			path_maker.Add(F_name);
 			F_state = came_from[F_state];
 			F_name = came_from_name[F_state];
