@@ -7,6 +7,7 @@ public class State{
 
 	public Vector2 position;
 
+
 	public State(Vector2 pos) {
 		position = pos;
 	}

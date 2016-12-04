@@ -33,6 +33,7 @@ public class Astar: MonoBehaviour {
 	public Dictionary<State, State> came_from;
 	public Dictionary<State, string> came_from_name; //string name of action that brought it to that state
 	public Dictionary<State, float> cost_so_far; //distance
+	public Dictionary<State, int> steps_so_far;
 
 	public List<string> good_moves;
 	string action_name = null;
@@ -61,6 +62,7 @@ public class Astar: MonoBehaviour {
 		came_from = new Dictionary<State, State> ();
 		came_from_name = new Dictionary<State, string> ();
 		cost_so_far = new Dictionary<State, float> ();
+		steps_so_far = new Dictionary<State, int> ();
 		path = new List<string> ();
 		path_maker = new List<string> ();
 
@@ -131,6 +133,7 @@ public class Astar: MonoBehaviour {
 		came_from[initial_state] = null;
 		came_from_name[initial_state] = "";
 		cost_so_far[initial_state] = 0.0f;
+		steps_so_far[initial_state] = 0;
 		path.Add ("");
 		Info initial = new Info ("", initial_state);
 		frontier.Enqueue(initial, 0);
@@ -138,7 +141,10 @@ public class Astar: MonoBehaviour {
 		//eneList = eneScript.listOfEnemies;
 
 		//while time() - start_time < limit { //if fixed step doesnt properly do what we want
-		while (frontier.Count != 0 && count < 40) {
+		while (count < 10000) {
+			if (count == 9999) {
+				Debug.Log ("rip in pasta");
+			}
 			count++;
 			Info current_info = frontier.Dequeue ();
 			state_name = current_info.action_name;
@@ -153,10 +159,10 @@ public class Astar: MonoBehaviour {
 			//Debug.Log (eneList.Count);
 			// 2 exit conditions; one checking for an enemy, another for no enemy in which case, remain in place dodging
 			Vector2 ene_pos = Enemy.transform.position;
-			if (current_pos.x == ene_pos.x) {	
-				Debug.Log ("Path A");
-				//Failed to find a path
-
+			if (steps_so_far[current_state] == 3) {	
+				if (count > 1000) {
+					Debug.Log ("iteration: " + count);
+				}
 				path = creatingPath (current_state, state_name);
 				return path;
 				/*
@@ -169,8 +175,7 @@ public class Astar: MonoBehaviour {
 			GameObject[] bulletArray = GameObject.FindGameObjectsWithTag ("EnemyBullet");
 			//Debug.Log ("Prior: " + bulletArray.Length);
 			List<GameObject> nearbyThreats = keepThreatsIntoList (current_pos, bulletArray);
-
-			//Debug.Log ("Post: " + nearbyThreats.Count);
+			 
 			/*
 			Vector2 dodge_pos = transform.position;
 			if (current_pos == dodge_pos && !Enemy.activeSelf) {
@@ -187,6 +192,7 @@ public class Astar: MonoBehaviour {
 				//Debug.Log (action_name);
 				State newState = new State(current_state.position);
 				AIBehavior.apply_move(action_name, newState);
+				// Simulate state here
 				//Debug.Log (newState.position);
 				float distance = Vector2.Distance(newState.position, current_state.position);
 				new_cost = cost_so_far[current_state] + distance;
@@ -194,49 +200,54 @@ public class Astar: MonoBehaviour {
 				float testValue;
 				if ((cost_so_far.TryGetValue(newState, out testValue) == false) || new_cost < cost_so_far [newState]) {
 					cost_so_far[newState] = new_cost;
-					priority = new_cost + heuristic(current_state, newState, ene_pos);
+					priority = new_cost + heuristic(current_state, newState, ene_pos, nearbyThreats, steps_so_far[current_state]+1, action_name);
 					Info newer_info = new Info(action_name, newState);
-					frontier.Enqueue(newer_info, priority);
+					steps_so_far[newState] = steps_so_far[current_state]+1;
 					came_from[newState] = current_state;
 					came_from_name[newState] = action_name;
+					frontier.Enqueue(newer_info, priority);
 				}
 			}
 
 
 
 		}
-//		Debug.Log ("path C");
 		frontier.Clear ();
 		//path = creatingPath (current_state, state_name);
 		return path;
 	}
 	//Almost like P5
-	private float heuristic(State current, State newState, Vector2 ene_position) {
-
+	private float heuristic(State current, State newState, Vector2 ene_position, List<GameObject> nearby_enemies, int steps, string action) {
+		float STEP_TIME = 0.02f;
+		float COLLISION_DIST = 1.00f;
+		float GREEDY_HIT = 10000f;
 		//for group of bullets around playerL
 		//if any have same position, return inf
 		//Debug.Log("current: " + current.position);
 		//Debug.Log ("new: " + newState.position);
-		testpos = newState.position;
-		colliders = Physics2D.OverlapCircleAll(testpos, 2.0f, 7, -Mathf.Infinity, Mathf.Infinity);
 
-		if (colliders.Length != 0) {
-			for (var j = colliders.GetEnumerator (); j.MoveNext ();) {
-				testcol = (Collider2D)j.Current;
-				colliderpos = testcol.transform.position;
-				if (colliderpos == testpos) {
-					Array.Clear (colliders, 0, colliders.Length);
-					return Mathf.Infinity;
-				} 
+		float output = 0;
+		// Check if hit
+		for (var i = nearby_enemies.GetEnumerator (); i.MoveNext ();) {
+			GameObject test_ene = i.Current;
+			Vector2 vel = test_ene.GetComponent<Rigidbody2D>().velocity;
+			Vector2 pos = test_ene.transform.position;
 
+			Vector2 est_pos = pos + (vel * (STEP_TIME * steps));
+
+			//Debug.Log (steps + ": " + pos + " -> " + est_pos + " (" + vel + ")");
+
+			float dist = Vector2.Distance(newState.position, est_pos);
+			if (dist <= COLLISION_DIST) {
+				Debug.Log ("memes");
+				return output + GREEDY_HIT;
 			}
 		}
 
 		//need a collider check to see if any actually collide with main 
 
-		float distance = Mathf.Abs(newState.position.x - ene_position.x);
-//		Debug.Log ("distance: " + distance);
-		return distance;
+		//Debug.Log ("distance: " + distance);
+		return output;
 	}
 
 	private float time() {

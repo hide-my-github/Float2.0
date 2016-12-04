@@ -72,6 +72,17 @@ public class AIBehavior : MonoBehaviour {
 		Astar ();
 		//Debug.Log ("after Astarpath");
 
+		if (path != null && path.Count != 0) {
+			string next_move = path [0];
+			path.RemoveAt (0);
+			Debug.Log ("A: " + next_move);
+			State position = new State (this.gameObject.transform.position);
+			apply_move (next_move, position);
+		} else {
+			Debug.Log ("B");
+			State initial = new State(this.gameObject.transform.position);
+			path = astar.Aalgorithm(initial);
+		}
 	}
 
 	void OnCollisionEnter2D(Collision2D col)
@@ -96,16 +107,9 @@ public class AIBehavior : MonoBehaviour {
 	public void Astar () {
 //		Debug.Log ("Here before A star");
 		//use a list of strings 
-		State initial = new State(this.gameObject.transform.position);
-		path = astar.Aalgorithm(initial);
 //		Debug.Log ("After A*");
 //		foreach (string item in path) { Debug.Log ((item)); }
 //		Debug.Log ("Should print path");
-		for (var j = path.GetEnumerator (); j.MoveNext ();) {
-			move = j.Current;
-			apply_move (move, initial);
-		}
-		path.Clear ();
 	}
 
 	public void moveUpLeft(State state){
