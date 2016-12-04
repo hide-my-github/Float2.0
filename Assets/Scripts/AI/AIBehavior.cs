@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -23,12 +23,37 @@ public class AIBehavior : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
-		
+		if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.A)) {
+			moveUpLeft();
+		}
+		else if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D)) {
+			moveUpRight();
+		}
+		else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.A)) {
+			moveDownLeft();
+		}
+		else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.D))
+		{
+			moveDownRight();
+		}
+		else if (Input.GetKey(KeyCode.W)){
+			moveUp();
+		}
+		else if (Input.GetKey(KeyCode.A)) {
+			moveLeft();
+		}
+		else if (Input.GetKey(KeyCode.S)) {
+			moveDown();
+		}
+		else if (Input.GetKey(KeyCode.D)) {
+			moveRight();
+		}
 	}
 
 	//FPS
 	void FixedUpdate()
 	{
+		
 		nextFire -= Time.deltaTime;
 
 		if (nextFire <= 0.0f)
@@ -37,11 +62,22 @@ public class AIBehavior : MonoBehaviour {
 			shoot();
 		}
 		//Debug.Log ("before Astarpath");
-		Astar ();
+		//Astar ();
 		//Debug.Log ("after Astarpath");
-		//idea.  if object is already on path and new astar has outputted a newer path, get rid of the old one
 
-
+		/*if (path != null && path.Count != 0) {
+			string next_move = path [0];
+			path.RemoveAt (0);
+			Debug.Log ("A: " + next_move);
+			State position = new State (this.gameObject.transform.position);
+			apply_move (next_move, position);
+		} else {*/
+		Debug.Log ("B");
+		State initial = new State(this.gameObject.transform.position);
+		path = astar.Aalgorithm(initial);
+		for (var i = path.GetEnumerator (); i.MoveNext ();) {
+			apply_move (i.Current, initial);
+		}
 	}
 
 	void OnCollisionEnter2D(Collision2D col)
@@ -64,18 +100,11 @@ public class AIBehavior : MonoBehaviour {
 	}
 
 	public void Astar () {
-		Debug.Log ("Here before A star");
+//		Debug.Log ("Here before A star");
 		//use a list of strings 
-		State initial = new State(this.gameObject.transform.position);
-		path = astar.Aalgorithm(initial);
-		Debug.Log ("After A*");
-		foreach (string item in path) { Debug.Log ((item)); }
-		Debug.Log ("Should print path");
-		for (var j = path.GetEnumerator (); j.MoveNext ();) {
-			move = j.Current;
-			apply_move (move, initial);
-		}
-		path.Clear ();
+//		Debug.Log ("After A*");
+//		foreach (string item in path) { Debug.Log ((item)); }
+//		Debug.Log ("Should print path");
 	}
 
 	public void moveUpLeft(State state){
@@ -147,9 +176,51 @@ public class AIBehavior : MonoBehaviour {
 		} else if (move == "moveRight") {
 			moveRight (state);
 		}
+		/*Type AImove = typeof(AIBehavior);
+		MethodInfo action = AImove.GetMethod (name);
+		if (action != null)
+			action.Invoke (AI, 0f);*/
 	}
 
+	public void moveUpLeft(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(-0.1f, 0.1f);
+		transform.position = pos;
+	}
+	public void moveUpRight(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(0.1f, 0.1f);
+		transform.position = pos;
+	}
+	public void moveDownLeft(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(-0.1f, -0.1f);
+		transform.position = pos;
+	}
+	public void moveDownRight(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(0.1f, -0.1f);
+		transform.position = pos;
+	}
+	public void moveUp(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(0.0f, 0.1f);
+		transform.position = pos;
+	}
+	public void moveDown(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(0.0f, -0.1f);
+		transform.position = pos;
+	}
+	public void moveLeft(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(-0.1f, 0.0f);
+		transform.position = pos;
+	}
+	public void moveRight(){
+		Vector2 pos = transform.position;
+		pos += new Vector2(0.1f, 0.0f);
+		transform.position = pos;
+	}
 
 }
-
-	
