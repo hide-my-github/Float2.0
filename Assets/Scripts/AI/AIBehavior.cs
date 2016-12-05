@@ -48,7 +48,7 @@ public class AIBehavior : MonoBehaviour {
 			State position = new State (this.gameObject.transform.position);
 			apply_move (next_move, position);
 		} else {*/
-		Debug.Log ("B");
+//		Debug.Log ("B");
 		State initial = new State(this.gameObject.transform.position);
 		path = astar.Aalgorithm(initial);
 		apply_move (path [0], initial);

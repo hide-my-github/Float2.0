@@ -163,14 +163,18 @@ public class Astar: MonoBehaviour {
 			//Debug.Log ("Prior: " + bulletArray.Length);
 			List<GameObject> nearbyThreats = keepThreatsIntoList (current_pos, bulletArray);
 			//Debug.Log (eneList.Count);
+			//find nearest enemy within X location amongst bulletArray
+			GameObject[] enemyArray = GameObject.FindGameObjectsWithTag ("Enemy");
+			float nearestEnemyX = findNearestEnemyX(enemyArray, current_pos);
 			// 2 exit conditions; one checking for an enemy, another for no enemy in which case, remain in place dodging
-			Vector2 ene_pos = Enemy.transform.position;
+			//Vector2 ene_pos = Enemy.transform.position;
 			Vector2 dodge_pos = transform.position;
+			/*
 			if (current_pos.x == ene_pos.x) {
 				path = creatingPath (current_state, state_name);
 				return path;
 			}
-
+			*/
 			if (steps_so_far[current_state] == 2) {	
 				if (nearbyThreats.Count > 0) {
 					path = creatingPath (current_state, state_name);
@@ -205,7 +209,7 @@ public class Astar: MonoBehaviour {
 				float testValue;
 				if ((cost_so_far.TryGetValue(newState, out testValue) == false) || new_cost < cost_so_far [newState]) {
 					cost_so_far[newState] = new_cost;
-					priority = new_cost + heuristic(current_state, newState, ene_pos, nearbyThreats, steps_so_far[current_state], action_name);
+					priority = new_cost + heuristic(current_state, newState, nearestEnemyX, nearbyThreats, steps_so_far[current_state], action_name);
 					Info newer_info = new Info(action_name, newState);
 					steps_so_far[newState] = steps_so_far[current_state]+1;
 					came_from[newState] = current_state;
@@ -222,21 +226,19 @@ public class Astar: MonoBehaviour {
 		return path;
 	}
 	//Almost like P5
-	private float heuristic(State current, State newState, Vector2 ene_position, List<GameObject> nearby_enemies, int steps, string action) {
+	private float heuristic(State current, State newState, float ene_position_x, List<GameObject> nearby_bullets, int steps, string action) {
 
 		//for group of bullets around playerL
 		//if any have same position, return inf
 		//Debug.Log("current: " + current.position);
 		//Debug.Log ("new: " + newState.position);
 
-		float output = newState.position.x - ene_position.x;
-		if (output < 0) {
-			output = -output;
-		}
+		float output = Mathf.Abs(Mathf.Abs(newState.position.x) - Mathf.Abs(ene_position_x));
+
 		// Check if hit
 		//for (var i = nearby_enemies.GetEnumerator (); i.MoveNext ();) {
-		for (int i = 0; i < nearby_enemies.Count; i++) {
-			test_ene = nearby_enemies[i];
+		for (int i = 0; i < nearby_bullets.Count; i++) {
+			test_ene = nearby_bullets[i];
 			vel = test_ene.GetComponent<Rigidbody2D>().velocity;
 			pos = test_ene.transform.position;
 
@@ -247,14 +249,14 @@ public class Astar: MonoBehaviour {
 			float dist = Vector2.Distance(newState.position, est_pos);
 			if (dist <= COLLISION_DIST) {
 				//Debug.Log ("memes");
-				return output + GREEDY_HIT;
+				return output + GREEDY_HIT + steps;
 			}
 		}
 
 		//need a collider check to see if any actually collide with main 
 
 		//Debug.Log ("distance: " + distance);
-		return output;
+		return output + steps;
 	}
 
 
@@ -285,5 +287,24 @@ public class Astar: MonoBehaviour {
 			}
 		}
 		return list; 
+	}
+
+	private float findNearestEnemyX(GameObject[] ba, Vector2 AI_pos){
+		GameObject return_this;
+		if (ba.Length == 0) {
+			Debug.Log ("fucked up!");
+			return 0.0f;
+		}
+		return_this = ba [0];
+		Vector3 v3pos = new Vector3 (AI_pos.x, AI_pos.y, 0);
+		foreach(GameObject enemy in ba){
+			float lowest_distance = Vector3.Distance (return_this.transform.position, v3pos);
+			float new_distance = Vector3.Distance (enemy.transform.position, v3pos);
+			if (new_distance < lowest_distance) {
+				return_this = enemy;
+			}
+		}
+//		Debug.Log ("Nearest Enemy X: " + return_this.transform.position.x);
+		return return_this.transform.position.x;
 	}
 }
