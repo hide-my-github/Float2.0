@@ -23,31 +23,7 @@ public class AIBehavior : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update() {
-		if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.A)) {
-			moveUpLeft();
-		}
-		else if (Input.GetKey(KeyCode.W) && Input.GetKey(KeyCode.D)) {
-			moveUpRight();
-		}
-		else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.A)) {
-			moveDownLeft();
-		}
-		else if (Input.GetKey(KeyCode.S) && Input.GetKey(KeyCode.D))
-		{
-			moveDownRight();
-		}
-		else if (Input.GetKey(KeyCode.W)){
-			moveUp();
-		}
-		else if (Input.GetKey(KeyCode.A)) {
-			moveLeft();
-		}
-		else if (Input.GetKey(KeyCode.S)) {
-			moveDown();
-		}
-		else if (Input.GetKey(KeyCode.D)) {
-			moveRight();
-		}
+		
 	}
 
 	//FPS
@@ -64,8 +40,8 @@ public class AIBehavior : MonoBehaviour {
 		//Debug.Log ("before Astarpath");
 		//Astar ();
 		//Debug.Log ("after Astarpath");
-
-		/*if (path != null && path.Count != 0) {
+		/*
+		if (path != null && path.Count != 0) {
 			string next_move = path [0];
 			path.RemoveAt (0);
 			Debug.Log ("A: " + next_move);
@@ -75,9 +51,12 @@ public class AIBehavior : MonoBehaviour {
 		Debug.Log ("B");
 		State initial = new State(this.gameObject.transform.position);
 		path = astar.Aalgorithm(initial);
-		for (var i = path.GetEnumerator (); i.MoveNext ();) {
-			apply_move (i.Current, initial);
-		}
+		apply_move (path [0], initial);
+		/*for (int i = 0; i < path.Count; i++) {
+			apply_move (path[i], initial);
+		}*/
+		path.Clear ();
+
 	}
 
 	void OnCollisionEnter2D(Collision2D col)
@@ -182,45 +161,6 @@ public class AIBehavior : MonoBehaviour {
 			action.Invoke (AI, 0f);*/
 	}
 
-	public void moveUpLeft(){
-		Vector2 pos = transform.position;
-		pos += new Vector2(-0.1f, 0.1f);
-		transform.position = pos;
-	}
-	public void moveUpRight(){
-		Vector2 pos = transform.position;
-		pos += new Vector2(0.1f, 0.1f);
-		transform.position = pos;
-	}
-	public void moveDownLeft(){
-		Vector2 pos = transform.position;
-		pos += new Vector2(-0.1f, -0.1f);
-		transform.position = pos;
-	}
-	public void moveDownRight(){
-		Vector2 pos = transform.position;
-		pos += new Vector2(0.1f, -0.1f);
-		transform.position = pos;
-	}
-	public void moveUp(){
-		Vector2 pos = transform.position;
-		pos += new Vector2(0.0f, 0.1f);
-		transform.position = pos;
-	}
-	public void moveDown(){
-		Vector2 pos = transform.position;
-		pos += new Vector2(0.0f, -0.1f);
-		transform.position = pos;
-	}
-	public void moveLeft(){
-		Vector2 pos = transform.position;
-		pos += new Vector2(-0.1f, 0.0f);
-		transform.position = pos;
-	}
-	public void moveRight(){
-		Vector2 pos = transform.position;
-		pos += new Vector2(0.1f, 0.0f);
-		transform.position = pos;
-	}
+
 
 }
