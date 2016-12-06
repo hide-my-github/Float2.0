@@ -89,60 +89,48 @@ public class AIBehavior : MonoBehaviour {
 
 	public void moveUpLeft(State state){
 		Vector2 pos = transform.position;
-		if (pos.x > -5.5f)
-			pos += new Vector2 (-0.1f, 0.0f);
-		if (pos.y < 4f)
-			pos += new Vector2 (0.0f, 0.1f);
+		pos += new Vector2 (-0.1f, 0.0f);
+		pos += new Vector2 (0.0f, 0.1f);
 		state.position = pos;
 	}
 	public void moveUpRight(State state){
 		Vector2 pos = transform.position;
-		if (pos.x < 5.5f)
-			pos += new Vector2 (0.1f, 0.0f);
-		if (pos.y < 4f)
-			pos += new Vector2 (0.0f, 0.1f);
+		pos += new Vector2 (0.1f, 0.0f);
+		pos += new Vector2 (0.0f, 0.1f);
 		state.position = pos;
 	}
 	public void moveDownLeft(State state){
 		Vector2 pos = transform.position;
-		if (pos.x > -5.5f)
-			pos += new Vector2 (-0.1f, 0.0f);
-		if (pos.y > -4f)
-			pos += new Vector2 (0.0f, -0.1f);
+		pos += new Vector2 (-0.1f, 0.0f);
+		pos += new Vector2 (0.0f, -0.1f);
 		state.position = pos;
 	}
 	public void moveDownRight(State state){
 		Vector2 pos = transform.position;
 //		Debug.Log ("pos: " + pos);
-		if (pos.x < 5.5f)
-			pos += new Vector2 (0.1f, 0.0f);
-		if (pos.y > -4f)
-			pos += new Vector2 (0.0f, -0.1f);
+		pos += new Vector2 (0.1f, 0.0f);
+		pos += new Vector2 (0.0f, -0.1f);
 		pos += new Vector2(0.1f, -0.1f);
 		state.position = pos;
 	}
 	public void moveUp(State state){
 		Vector2 pos = transform.position;
-		if(pos.y < 4f)
-			pos += new Vector2(0.0f, 0.1f);
+		pos += new Vector2(0.0f, 0.1f);
 		state.position = pos;
 	}
 	public void moveDown(State state){
 		Vector2 pos = transform.position;
-		if(pos.y > -4f)
-			pos += new Vector2(0.0f, -0.1f);
+		pos += new Vector2(0.0f, -0.1f);
 		state.position = pos;
 	}
 	public void moveLeft(State state){
 		Vector2 pos = transform.position;
-		if (pos.x > -5.5f)
-			pos += new Vector2(-0.1f, 0.0f);
+		pos += new Vector2(-0.1f, 0.0f);
 		state.position = pos;
 	}
 	public void moveRight(State state){
 		Vector2 pos = transform.position;
-		if (pos.x < 5.5f)
-			pos += new Vector2(0.1f, 0.0f);
+		pos += new Vector2(0.1f, 0.0f);
 		state.position = pos;
 	}
 
@@ -174,60 +162,48 @@ public class AIBehavior : MonoBehaviour {
 
 	public void moveUpLeft(){
 		Vector2 pos = transform.position;
-		if (pos.x > -5.5f)
-			pos += new Vector2 (-0.1f, 0.0f);
-		if (pos.y < 4.5f)
-			pos += new Vector2 (0.0f, 0.1f);
+		pos += new Vector2 (-0.1f, 0.0f);
+		pos += new Vector2 (0.0f, 0.1f);
 		transform.position = pos;
 	}
 	public void moveUpRight(){
 		Vector2 pos = transform.position;
-		if (pos.x < 5.5f)
-			pos += new Vector2 (0.1f, 0.0f);
-		if (pos.y < 4.5f)
-			pos += new Vector2 (0.0f, 0.1f);
+		pos += new Vector2 (0.1f, 0.0f);
+		pos += new Vector2 (0.0f, 0.1f);
 		transform.position = pos;
 	}
 	public void moveDownLeft(){
 		Vector2 pos = transform.position;
-		if (pos.x > -5.5f)
-			pos += new Vector2 (-0.1f, 0.0f);
-		if (pos.y > -4.5f)
-			pos += new Vector2 (0.0f, -0.1f);
+		pos += new Vector2 (-0.1f, 0.0f);
+		pos += new Vector2 (0.0f, -0.1f);
 		transform.position = pos;
 	}
 	public void moveDownRight(){
 		Vector2 pos = transform.position;
 		//		Debug.Log ("pos: " + pos);
-		if (pos.x < 5.5f)
-			pos += new Vector2 (0.1f, 0.0f);
-		if (pos.y > -4.5f)
-			pos += new Vector2 (0.0f, -0.1f);
+		pos += new Vector2 (0.1f, 0.0f);
+		pos += new Vector2 (0.0f, -0.1f);
 		pos += new Vector2(0.1f, -0.1f);
 		transform.position = pos;
 	}
 	public void moveUp(){
 		Vector2 pos = transform.position;
-		if(pos.y < 4.5f)
-			pos += new Vector2(0.0f, 0.1f);
+		pos += new Vector2(0.0f, 0.1f);
 		transform.position = pos;
 	}
 	public void moveDown(){
 		Vector2 pos = transform.position;
-		if(pos.y > -4.5f)
-			pos += new Vector2(0.0f, -0.1f);
+		pos += new Vector2(0.0f, -0.1f);
 		transform.position = pos;
 	}
 	public void moveLeft(){
 		Vector2 pos = transform.position;
-		if (pos.x > -5.5f)
-			pos += new Vector2(-0.1f, 0.0f);
+		pos += new Vector2(-0.1f, 0.0f);
 		transform.position = pos;
 	}
 	public void moveRight(){
 		Vector2 pos = transform.position;
-		if (pos.x < 5.5f)
-			pos += new Vector2(0.1f, 0.0f);
+		pos += new Vector2(0.1f, 0.0f);
 		transform.position = pos;
 	}
 

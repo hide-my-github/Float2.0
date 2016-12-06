@@ -99,27 +99,27 @@ public class Astar: MonoBehaviour {
 
 	void FixedUpdate() {
 		eneList = eneScript.listOfEnemies;
-		/*
+
 		//left wall
-		if (this.transform.position.x <= -6f) {
+		if (this.transform.position.x <= -5.5f) {
 			good_moves.Remove ("moveUpLeft");
 			good_moves.Remove ("moveLeft");
 			good_moves.Remove ("moveDownLeft");
 		}
 		//right wall
-		else if (this.transform.position.x >= 6f) {
+		else if (this.transform.position.x >= 5.5f) {
 			good_moves.Remove ("moveUpRight");
 			good_moves.Remove ("moveRight");
 			good_moves.Remove ("moveDownRight");
 		}
 		//top wall
-		else if (this.transform.position.y >= 4.50f) {
+		else if (this.transform.position.y >= 4f) {
 			good_moves.Remove ("moveUpLeft");
 			good_moves.Remove ("moveUp");
 			good_moves.Remove ("moveUpRight");
 		}
 		//bottom wall
-		else if (this.transform.position.y <= -4.50f) {
+		else if (this.transform.position.y <= -4f) {
 			good_moves.Remove ("moveDownLeft");
 			good_moves.Remove ("moveDown");
 			good_moves.Remove ("moveDownRight");
@@ -135,7 +135,7 @@ public class Astar: MonoBehaviour {
 			good_moves.Add ("moveRight");
 			good_moves.Add ("doNothing");
 		}
-		*/
+
 	}
 
 	public List<string> Aalgorithm(State state) {
@@ -222,6 +222,8 @@ public class Astar: MonoBehaviour {
 		frontier.Clear ();
 		//path = creatingPath (current_state, state_name);
 		//Debug.Log("here: "+path[0]);
+		if (path.Count == 0)
+			Debug.Log ("no path");
 		return path;
 	}
 	//Almost like P5
