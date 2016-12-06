@@ -99,7 +99,7 @@ public class Astar: MonoBehaviour {
 
 	void FixedUpdate() {
 		eneList = eneScript.listOfEnemies;
-
+		/*
 		//left wall
 		if (this.transform.position.x <= -6f) {
 			good_moves.Remove ("moveUpLeft");
@@ -135,6 +135,7 @@ public class Astar: MonoBehaviour {
 			good_moves.Add ("moveRight");
 			good_moves.Add ("doNothing");
 		}
+		*/
 	}
 
 	public List<string> Aalgorithm(State state) {
@@ -217,12 +218,10 @@ public class Astar: MonoBehaviour {
 					frontier.Enqueue(newer_info, priority);
 				}
 			}
-
-
-
 		}
 		frontier.Clear ();
 		//path = creatingPath (current_state, state_name);
+		//Debug.Log("here: "+path[0]);
 		return path;
 	}
 	//Almost like P5
@@ -249,14 +248,14 @@ public class Astar: MonoBehaviour {
 			float dist = Vector2.Distance(newState.position, est_pos);
 			if (dist <= COLLISION_DIST) {
 				//Debug.Log ("memes");
-				return output + GREEDY_HIT + steps;
+				return output + GREEDY_HIT;
 			}
 		}
 
 		//need a collider check to see if any actually collide with main 
 
 		//Debug.Log ("distance: " + distance);
-		return output + steps;
+		return output;
 	}
 
 
@@ -266,8 +265,9 @@ public class Astar: MonoBehaviour {
 		string F_name = name;
 		//State F_state = current_state;
 		State F_state = current;
-
+//		Debug.Log ("New Path");
 		while (came_from[F_state] != null) {
+//			Debug.Log (": " + F_name);
 			path_maker.Add(F_name);
 			F_state = came_from[F_state];
 			F_name = came_from_name[F_state];
@@ -292,7 +292,6 @@ public class Astar: MonoBehaviour {
 	private float findNearestEnemyX(GameObject[] ba, Vector2 AI_pos){
 		GameObject return_this;
 		if (ba.Length == 0) {
-			Debug.Log ("fucked up!");
 			return 0.0f;
 		}
 		return_this = ba [0];

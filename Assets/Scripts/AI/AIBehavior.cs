@@ -51,7 +51,8 @@ public class AIBehavior : MonoBehaviour {
 //		Debug.Log ("B");
 		State initial = new State(this.gameObject.transform.position);
 		path = astar.Aalgorithm(initial);
-		apply_move (path [0], initial);
+		//Debug.Log ("path: " + path[0]);
+		apply_move (path [0]);
 		/*for (int i = 0; i < path.Count; i++) {
 			apply_move (path[i], initial);
 		}*/
@@ -88,50 +89,60 @@ public class AIBehavior : MonoBehaviour {
 
 	public void moveUpLeft(State state){
 		Vector2 pos = transform.position;
-		pos += new Vector2(-0.1f, 0.1f);
-		transform.position = pos;
+		if (pos.x > -5.5f)
+			pos += new Vector2 (-0.1f, 0.0f);
+		if (pos.y < 4f)
+			pos += new Vector2 (0.0f, 0.1f);
 		state.position = pos;
 	}
 	public void moveUpRight(State state){
 		Vector2 pos = transform.position;
-		pos += new Vector2(0.1f, 0.1f);
-		transform.position = pos;
+		if (pos.x < 5.5f)
+			pos += new Vector2 (0.1f, 0.0f);
+		if (pos.y < 4f)
+			pos += new Vector2 (0.0f, 0.1f);
 		state.position = pos;
 	}
 	public void moveDownLeft(State state){
 		Vector2 pos = transform.position;
-		pos += new Vector2(-0.1f, -0.1f);
-		transform.position = pos;
+		if (pos.x > -5.5f)
+			pos += new Vector2 (-0.1f, 0.0f);
+		if (pos.y > -4f)
+			pos += new Vector2 (0.0f, -0.1f);
 		state.position = pos;
 	}
 	public void moveDownRight(State state){
 		Vector2 pos = transform.position;
+//		Debug.Log ("pos: " + pos);
+		if (pos.x < 5.5f)
+			pos += new Vector2 (0.1f, 0.0f);
+		if (pos.y > -4f)
+			pos += new Vector2 (0.0f, -0.1f);
 		pos += new Vector2(0.1f, -0.1f);
-		transform.position = pos;
 		state.position = pos;
 	}
 	public void moveUp(State state){
 		Vector2 pos = transform.position;
-		pos += new Vector2(0.0f, 0.1f);
-		transform.position = pos;
+		if(pos.y < 4f)
+			pos += new Vector2(0.0f, 0.1f);
 		state.position = pos;
 	}
 	public void moveDown(State state){
 		Vector2 pos = transform.position;
-		pos += new Vector2(0.0f, -0.1f);
-		transform.position = pos;
+		if(pos.y > -4f)
+			pos += new Vector2(0.0f, -0.1f);
 		state.position = pos;
 	}
 	public void moveLeft(State state){
 		Vector2 pos = transform.position;
-		pos += new Vector2(-0.1f, 0.0f);
-		transform.position = pos;
+		if (pos.x > -5.5f)
+			pos += new Vector2(-0.1f, 0.0f);
 		state.position = pos;
 	}
 	public void moveRight(State state){
 		Vector2 pos = transform.position;
-		pos += new Vector2(0.1f, 0.0f);
-		transform.position = pos;
+		if (pos.x < 5.5f)
+			pos += new Vector2(0.1f, 0.0f);
 		state.position = pos;
 	}
 
@@ -155,12 +166,93 @@ public class AIBehavior : MonoBehaviour {
 		} else if (move == "moveRight") {
 			moveRight (state);
 		}
-		/*Type AImove = typeof(AIBehavior);
-		MethodInfo action = AImove.GetMethod (name);
-		if (action != null)
-			action.Invoke (AI, 0f);*/
 	}
 
+	/*		THESE MOVEMENT METHODS AFFECT REAL STATE
+	 * 		Note how there are no arguments
+	 */
+
+	public void moveUpLeft(){
+		Vector2 pos = transform.position;
+		if (pos.x > -5.5f)
+			pos += new Vector2 (-0.1f, 0.0f);
+		if (pos.y < 4.5f)
+			pos += new Vector2 (0.0f, 0.1f);
+		transform.position = pos;
+	}
+	public void moveUpRight(){
+		Vector2 pos = transform.position;
+		if (pos.x < 5.5f)
+			pos += new Vector2 (0.1f, 0.0f);
+		if (pos.y < 4.5f)
+			pos += new Vector2 (0.0f, 0.1f);
+		transform.position = pos;
+	}
+	public void moveDownLeft(){
+		Vector2 pos = transform.position;
+		if (pos.x > -5.5f)
+			pos += new Vector2 (-0.1f, 0.0f);
+		if (pos.y > -4.5f)
+			pos += new Vector2 (0.0f, -0.1f);
+		transform.position = pos;
+	}
+	public void moveDownRight(){
+		Vector2 pos = transform.position;
+		//		Debug.Log ("pos: " + pos);
+		if (pos.x < 5.5f)
+			pos += new Vector2 (0.1f, 0.0f);
+		if (pos.y > -4.5f)
+			pos += new Vector2 (0.0f, -0.1f);
+		pos += new Vector2(0.1f, -0.1f);
+		transform.position = pos;
+	}
+	public void moveUp(){
+		Vector2 pos = transform.position;
+		if(pos.y < 4.5f)
+			pos += new Vector2(0.0f, 0.1f);
+		transform.position = pos;
+	}
+	public void moveDown(){
+		Vector2 pos = transform.position;
+		if(pos.y > -4.5f)
+			pos += new Vector2(0.0f, -0.1f);
+		transform.position = pos;
+	}
+	public void moveLeft(){
+		Vector2 pos = transform.position;
+		if (pos.x > -5.5f)
+			pos += new Vector2(-0.1f, 0.0f);
+		transform.position = pos;
+	}
+	public void moveRight(){
+		Vector2 pos = transform.position;
+		if (pos.x < 5.5f)
+			pos += new Vector2(0.1f, 0.0f);
+		transform.position = pos;
+	}
+
+
+	public void apply_move(string move) {
+		//applies move for AI to do certain function
+		//only for simulation purposes
+		if (move == "moveUpLeft") {
+			moveUpLeft ();
+		} else if (move == "moveUpRight") {
+			moveUpRight ();
+		} else if (move == "moveDownLeft") {
+			moveDownLeft ();
+		} else if (move == "moveDownRight") {
+			moveDownRight ();
+		} else if (move == "moveUp") {
+			moveUp ();
+		} else if (move == "moveLeft") {
+			moveLeft ();
+		} else if (move == "moveDown") {
+			moveDown ();
+		} else if (move == "moveRight") {
+			moveRight ();
+		}
+	}
 
 
 }
