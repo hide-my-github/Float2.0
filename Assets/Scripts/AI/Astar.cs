@@ -59,7 +59,7 @@ public class Astar: MonoBehaviour {
 
 	float STEP_TIME = 0.02f;
 	float COLLISION_DIST = 1.00f;
-	float GREEDY_HIT = 5f;
+	float GREEDY_HIT = 10000f;
 
 	//List<Collider2D> colliders;
 	int i = 0;
@@ -171,6 +171,10 @@ public class Astar: MonoBehaviour {
 			//Debug.Log (eneList.Count);
 			//find nearest enemy within X location amongst bulletArray
 			GameObject[] enemyArray = GameObject.FindGameObjectsWithTag ("Enemy");
+			if (enemyArray.Length == 0 && bulletArray.Length == 0) {
+				path.Add ("doNothing");
+				return path;
+			}
 			float nearestEnemyX = findNearestEnemyX(enemyArray, current_pos);
 			//Debug.Log ("nearest: " + nearestEnemyX);
 			// 2 exit conditions; one checking for an enemy, another for no enemy in which case, remain in place dodging
@@ -183,7 +187,7 @@ public class Astar: MonoBehaviour {
 			}
 			*/
 
-			if (steps_so_far[current_state] > 2) {
+			if (steps_so_far[current_state] == 3) {
 				path = creatingPath (current_state, state_name);
 				return path;
 			}
@@ -207,8 +211,8 @@ public class Astar: MonoBehaviour {
 				AIBehavior.apply_move(action_name, newState);
 				// Simulate state here
 				//Debug.Log (newState.position);
-				float distance = Vector2.Distance(newState.position, current_state.position);
-				new_cost = cost_so_far[current_state] + distance;
+				//float distance = Vector2.Distance(newState.position, current_state.position);
+				new_cost = cost_so_far[current_state] + 0.1f;
 
 				float testValue;
 				if ((cost_so_far.TryGetValue(newState, out testValue) == false) || new_cost < cost_so_far [newState]) {
@@ -295,7 +299,7 @@ public class Astar: MonoBehaviour {
 	private float findNearestEnemyX(GameObject[] ba, Vector2 AI_pos){
 		GameObject return_this;
 		if (ba.Length == 0) {
-			return 0.0f;
+			return AI_pos.x;
 		}
 		return_this = ba [0];
 		Vector3 v3pos = new Vector3 (AI_pos.x, AI_pos.y, 0);
