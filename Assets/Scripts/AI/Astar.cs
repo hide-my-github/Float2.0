@@ -59,7 +59,10 @@ public class Astar: MonoBehaviour {
 
 	float STEP_TIME = 0.02f;
 	float COLLISION_DIST = 0.8f;
-	float GREEDY_HIT = 1000000000f;
+	float GREEDY_HIT = 9999999999f;
+	float DODGE_RADIUS = 1f;
+	float NEARBY_ENEMY_RADIUS = 5f;
+	int STEPS_TIL_EXIT = 3;
 
 	//List<Collider2D> colliders;
 	int i = 0;
@@ -113,7 +116,7 @@ public class Astar: MonoBehaviour {
 			good_moves.Remove ("moveDownRight");
 		}
 		//top wall
-		else if (this.transform.position.y >= 4f) {
+		else if (this.transform.position.y >= 2f) {
 			good_moves.Remove ("moveUpLeft");
 			good_moves.Remove ("moveUp");
 			good_moves.Remove ("moveUpRight");
@@ -176,7 +179,7 @@ public class Astar: MonoBehaviour {
 			// 2 exit conditions; one checking for an enemy, another for no enemy in which case, remain in place dodging
 			Vector2 dodge_pos = transform.position;
 
-			if (steps_so_far[current_state] == 2) {
+			if (steps_so_far[current_state] == STEPS_TIL_EXIT) {
 				path = creatingPath (current_state, state_name);
 				return path;
 			}
@@ -193,7 +196,7 @@ public class Astar: MonoBehaviour {
 				float testValue;
 				if ((cost_so_far.TryGetValue(newState, out testValue) == false) || new_cost < cost_so_far [newState]) {
 					cost_so_far[newState] = new_cost;
-					priority = new_cost + heuristic(newState, nearestEnemyX, nearbyThreats, steps_so_far[current_state], action_name);
+					priority = new_cost + heuristic(newState, nearestEnemyX, nearbyThreats, steps_so_far[current_state]);
 					Info newer_info = new Info(action_name, newState);
 					steps_so_far[newState] = steps_so_far[current_state]+1;
 					came_from[newState] = current_state;
@@ -207,14 +210,17 @@ public class Astar: MonoBehaviour {
 	}
 
 	//Almost like P5
-	private float heuristic(State newState, float en_x, List<GameObject> nearby_bullets, int steps, string action) {
+	private float heuristic(State new_state, float en_x, List<GameObject> nearby_bullets, int steps) {
 		float output = 0.0f;
 		int hitCounter = 0;
 
-		float ai_x = newState.position.x;
+		float ai_x = new_state.position.x;
 
 		output = Mathf.Abs(ai_x - en_x);
-		
+		if (output == 0) {
+			output = Vector2.Distance(new_state.position, new Vector2 (en_x, -4.0f));
+		}
+
 		// Check if hit
 		for (int i = 0; i < nearby_bullets.Count; ++i) {
 			test_ene = nearby_bullets[i];
@@ -222,7 +228,7 @@ public class Astar: MonoBehaviour {
 			pos = test_ene.transform.position;
 			est_pos = pos + (vel * STEP_TIME * steps);
 
-			float dist = Vector2.Distance(newState.position, est_pos);
+			float dist = Vector2.Distance(new_state.position, est_pos);
 
 			if (dist <= COLLISION_DIST) {
 				return output + GREEDY_HIT;
@@ -251,7 +257,7 @@ public class Astar: MonoBehaviour {
 		List<GameObject> list = new List<GameObject>();
 		foreach (GameObject bullet in array) {
 			float dist = Vector2.Distance (pos, bullet.transform.position);
-			if (dist <= 4.0f) {
+			if (dist <= NEARBY_ENEMY_RADIUS) {
 				list.Add(bullet);
 			}
 		}
@@ -263,7 +269,7 @@ public class Astar: MonoBehaviour {
 		if (ba.Length == 0) {
 			return AI_pos.x;
 		}
-		return_this = ba [0];
+		return_this = ba[0];
 		Vector3 v3pos = new Vector3 (AI_pos.x, AI_pos.y, 0);
 		foreach(GameObject enemy in ba){
 			float lowest_distance = Vector3.Distance (return_this.transform.position, v3pos);
