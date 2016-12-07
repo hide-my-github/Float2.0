@@ -52,11 +52,14 @@ public class AIBehavior : MonoBehaviour {
 		State initial = new State(this.gameObject.transform.position);
 		path = astar.Aalgorithm(initial);
 		//Debug.Log ("path: " + path[0]);
-		apply_move (path [0]);
+		if (path.Count > 0) {
+			apply_move (path [0]);
+			//Debug.Log ("ACTION: " + path [0]);
+			path.RemoveAt (0);
+		}
 		/*for (int i = 0; i < path.Count; i++) {
 			apply_move (path[i], initial);
 		}*/
-		path.Clear ();
 
 	}
 
@@ -77,14 +80,6 @@ public class AIBehavior : MonoBehaviour {
 		launchThis.GetComponent<Rigidbody2D>().isKinematic = false;
 		launchThis.GetComponent<Rigidbody2D>().gravityScale = 0.0f;
 		Physics2D.IgnoreCollision(launchThis.GetComponent<Collider2D>(), this.GetComponent<Collider2D>());
-	}
-
-	public void Astar () {
-		//		Debug.Log ("Here before A star");
-		//use a list of strings 
-		//		Debug.Log ("After A*");
-		//		foreach (string item in path) { Debug.Log ((item)); }
-		//		Debug.Log ("Should print path");
 	}
 
 	public void moveUpLeft(State state){
@@ -110,7 +105,6 @@ public class AIBehavior : MonoBehaviour {
 //		Debug.Log ("pos: " + pos);
 		pos += new Vector2 (0.1f, 0.0f);
 		pos += new Vector2 (0.0f, -0.1f);
-		pos += new Vector2(0.1f, -0.1f);
 		state.position = pos;
 	}
 	public void moveUp(State state){
@@ -183,7 +177,6 @@ public class AIBehavior : MonoBehaviour {
 		//		Debug.Log ("pos: " + pos);
 		pos += new Vector2 (0.1f, 0.0f);
 		pos += new Vector2 (0.0f, -0.1f);
-		pos += new Vector2(0.1f, -0.1f);
 		transform.position = pos;
 	}
 	public void moveUp(){

@@ -119,7 +119,7 @@ public class Astar: MonoBehaviour {
 			good_moves.Remove ("moveUpRight");
 		}
 		//bottom wall
-		else if (this.transform.position.y <= -4f) {
+		else if (this.transform.position.y <= -4.5f) {
 			good_moves.Remove ("moveDownLeft");
 			good_moves.Remove ("moveDown");
 			good_moves.Remove ("moveDownRight");
@@ -140,6 +140,11 @@ public class Astar: MonoBehaviour {
 
 	public List<string> Aalgorithm(State state) {
 		path.Clear ();
+		came_from.Clear ();
+		cost_so_far.Clear ();
+		steps_so_far.Clear ();
+		came_from_name.Clear ();
+
 		initial_state = new State(state.position);
 		came_from[initial_state] = null;
 		came_from_name[initial_state] = "";
@@ -152,7 +157,7 @@ public class Astar: MonoBehaviour {
 		//eneList = eneScript.listOfEnemies;
 
 		//while time() - start_time < limit { //if fixed step doesnt properly do what we want
-		while (frontier.Count != 0 && count < 10) {
+		while (frontier.Count != 0) {
 
 			count++;
 			Info current_info = frontier.Dequeue ();
@@ -167,6 +172,7 @@ public class Astar: MonoBehaviour {
 			//find nearest enemy within X location amongst bulletArray
 			GameObject[] enemyArray = GameObject.FindGameObjectsWithTag ("Enemy");
 			float nearestEnemyX = findNearestEnemyX(enemyArray, current_pos);
+			//Debug.Log ("nearest: " + nearestEnemyX);
 			// 2 exit conditions; one checking for an enemy, another for no enemy in which case, remain in place dodging
 			//Vector2 ene_pos = Enemy.transform.position;
 			Vector2 dodge_pos = transform.position;
@@ -176,14 +182,10 @@ public class Astar: MonoBehaviour {
 				return path;
 			}
 			*/
-			if (steps_so_far[current_state] == 2) {	
-				if (nearbyThreats.Count > 0) {
-					path = creatingPath (current_state, state_name);
-					return path;
-				} else {
-					return path;
-				}
 
+			if (steps_so_far[current_state] > 2) {
+				path = creatingPath (current_state, state_name);
+				return path;
 			}
 
 			/*
@@ -195,8 +197,9 @@ public class Astar: MonoBehaviour {
 			}*/
 			//path.Add(F_name); //gives "" dunno if want
 			//print(current_state)
-
+			//Debug.Log("good_moves.Count: "+good_moves.Count);
 			for (int i = 0; i < good_moves.Count; i++) {
+				//Debug.Log ("meow");
 				//NEXT = Name, State effected by action, and Time cost
 				action_name = good_moves[i];
 				//Debug.Log (action_name);
@@ -222,42 +225,40 @@ public class Astar: MonoBehaviour {
 		frontier.Clear ();
 		//path = creatingPath (current_state, state_name);
 		//Debug.Log("here: "+path[0]);
-		if (path.Count == 0)
-			Debug.Log ("no path");
 		return path;
 	}
 	//Almost like P5
 	private float heuristic(State current, State newState, float ene_position_x, List<GameObject> nearby_bullets, int steps, string action) {
+		float output = 0.0f;
+		int hitCounter = 0;
+		Vector2 ai_x = new Vector2 (newState.position.x, 0.0f);
+		Vector2 en_x = new Vector2 (ene_position_x, 0.0f);
 
-		//for group of bullets around playerL
-		//if any have same position, return inf
-		//Debug.Log("current: " + current.position);
-		//Debug.Log ("new: " + newState.position);
-
-		float output = Mathf.Abs(Mathf.Abs(newState.position.x) - Mathf.Abs(ene_position_x));
-
+		if (ene_position_x != 0)
+			output = Vector2.Distance (ai_x, en_x);
+		//Debug.Log ("output: " + output);
 		// Check if hit
 		//for (var i = nearby_enemies.GetEnumerator (); i.MoveNext ();) {
 		for (int i = 0; i < nearby_bullets.Count; i++) {
 			test_ene = nearby_bullets[i];
 			vel = test_ene.GetComponent<Rigidbody2D>().velocity;
 			pos = test_ene.transform.position;
-
-			est_pos = pos + (vel * (STEP_TIME * 1));
+			est_pos = pos + (vel * STEP_TIME);
 
 			//Debug.Log (steps + ": " + pos + " -> " + est_pos + " (" + vel + ")");
 
 			float dist = Vector2.Distance(newState.position, est_pos);
+			//Debug.Log ("dist: " + dist);
 			if (dist <= COLLISION_DIST) {
-				//Debug.Log ("memes");
-				return output + GREEDY_HIT;
+				//	Debug.Log ("output+GREEDY: " + (output + GREEDY_HIT));
+				hitCounter++;
 			}
 		}
 
 		//need a collider check to see if any actually collide with main 
 
 		//Debug.Log ("distance: " + distance);
-		return output;
+		return output + (GREEDY_HIT * hitCounter);
 	}
 
 
@@ -284,7 +285,7 @@ public class Astar: MonoBehaviour {
 		//Vector3 v3pos = new Vector3 (pos.x, pos.y, 0);
 		foreach (GameObject bullet in array) {
 			float dist = Vector2.Distance (pos, bullet.transform.position);
-			if (dist <= 3.0f) {
+			if (dist <= 5.0f) {
 				list.Add(bullet);
 			}
 		}
