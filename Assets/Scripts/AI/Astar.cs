@@ -58,7 +58,7 @@ public class Astar: MonoBehaviour {
 	Vector2 est_pos;
 
 	float STEP_TIME = 0.02f;
-	float COLLISION_DIST = 0.75f;
+	float COLLISION_DIST = 0.8f;
 	float GREEDY_HIT = 10f;
 
 	//List<Collider2D> colliders;
@@ -228,9 +228,11 @@ public class Astar: MonoBehaviour {
 		float output = 0.0f;
 		int hitCounter = 0;
 
-		if (ene_position_x != 0) {
-			output = Mathf.Abs (newState.position.x - ene_position_x);
-		}
+		Vector2 ai_x = new Vector2 (newState.position.x, 0.0f);
+		Vector2 en_x = new Vector2 (ene_position_x, 0.0f);
+
+		if (ene_position_x != 0)
+			output = Vector2.Distance (ai_x, en_x);
 		//Debug.Log ("output: " + output);
 		// Check if hit
 		//for (var i = nearby_enemies.GetEnumerator (); i.MoveNext ();) {
@@ -293,7 +295,7 @@ public class Astar: MonoBehaviour {
 		//Vector3 v3pos = new Vector3 (pos.x, pos.y, 0);
 		foreach (GameObject bullet in array) {
 			float dist = Vector2.Distance (pos, bullet.transform.position);
-			if (dist <= 3.0f) {
+			if (dist <= 4.0f) {
 				list.Add(bullet);
 			}
 		}
