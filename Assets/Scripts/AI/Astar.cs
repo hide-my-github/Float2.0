@@ -113,7 +113,7 @@ public class Astar: MonoBehaviour {
 			good_moves.Remove ("moveDownRight");
 		}
 		//top wall
-		else if (this.transform.position.y >= 4f) {
+		else if (this.transform.position.y >= 0f) {
 			good_moves.Remove ("moveUpLeft");
 			good_moves.Remove ("moveUp");
 			good_moves.Remove ("moveUpRight");
