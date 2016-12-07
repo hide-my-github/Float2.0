@@ -60,7 +60,7 @@ public class Astar: MonoBehaviour {
 	float STEP_TIME = 0.02f;
 	float COLLISION_DIST = 0.8f;
 	float GREEDY_HIT = 9999999999f;
-	float DODGE_RADIUS = 1f;
+	float RETREAT_RADIUS = 0.0f;
 	float NEARBY_ENEMY_RADIUS = 5f;
 	int STEPS_TIL_EXIT = 3;
 
@@ -217,7 +217,7 @@ public class Astar: MonoBehaviour {
 		float ai_x = new_state.position.x;
 
 		output = Mathf.Abs(ai_x - en_x);
-		if (output == 0) {
+		if (output == RETREAT_RADIUS) {
 			output = Vector2.Distance(new_state.position, new Vector2 (en_x, -4.0f));
 		}
 
