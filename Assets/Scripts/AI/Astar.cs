@@ -59,7 +59,7 @@ public class Astar: MonoBehaviour {
 
 	float STEP_TIME = 0.02f;
 	float COLLISION_DIST = 0.8f;
-	float GREEDY_HIT = 10f;
+	float GREEDY_HIT = 1000000000f;
 
 	//List<Collider2D> colliders;
 	int i = 0;
@@ -188,13 +188,12 @@ public class Astar: MonoBehaviour {
 				State newState = new State(current_state.position);
 				AIBehavior.apply_move(action_name, newState);
 				// Simulate state here
-				float distance = Vector2.Distance(newState.position, current_state.position);
-				new_cost = cost_so_far[current_state] + distance;
+				new_cost = cost_so_far[current_state] + 0.1f;
 
 				float testValue;
 				if ((cost_so_far.TryGetValue(newState, out testValue) == false) || new_cost < cost_so_far [newState]) {
 					cost_so_far[newState] = new_cost;
-					priority = new_cost + heuristic(current_state, newState, nearestEnemyX, nearbyThreats, steps_so_far[current_state], action_name);
+					priority = new_cost + heuristic(newState, nearestEnemyX, nearbyThreats, steps_so_far[current_state], action_name);
 					Info newer_info = new Info(action_name, newState);
 					steps_so_far[newState] = steps_so_far[current_state]+1;
 					came_from[newState] = current_state;
@@ -208,28 +207,22 @@ public class Astar: MonoBehaviour {
 	}
 
 	//Almost like P5
-	private float heuristic(State current, State newState, float ene_position_x, List<GameObject> nearby_bullets, int steps, string action) {
+	private float heuristic(State newState, float en_x, List<GameObject> nearby_bullets, int steps, string action) {
 		float output = 0.0f;
 		int hitCounter = 0;
 
-		Vector2 ai_x = new Vector2 (newState.position.x, 0.0f);
-		Vector2 en_x = new Vector2 (ene_position_x, 0.0f);
+		float ai_x = newState.position.x;
 
-		if (ene_position_x != 0)
-			output = Vector2.Distance (ai_x, en_x);
+		output = Mathf.Abs(ai_x - en_x);
 		
 		// Check if hit
 		for (int i = 0; i < nearby_bullets.Count; ++i) {
 			test_ene = nearby_bullets[i];
 			vel = test_ene.GetComponent<Rigidbody2D>().velocity;
 			pos = test_ene.transform.position;
-			est_pos = pos + (vel * STEP_TIME);
+			est_pos = pos + (vel * STEP_TIME * steps);
 
 			float dist = Vector2.Distance(newState.position, est_pos);
-			float dist2 = Vector2.Distance(current_state.position, est_pos);
-			if (dist <= COLLISION_DIST && dist2 <= COLLISION_DIST) {
-				return Mathf.Infinity;
-			}
 
 			if (dist <= COLLISION_DIST) {
 				return output + GREEDY_HIT;
