@@ -37,19 +37,7 @@ public class AIBehavior : MonoBehaviour {
 			nextFire = 0.5f;
 			shoot();
 		}
-		//Debug.Log ("before Astarpath");
-		//Astar ();
-		//Debug.Log ("after Astarpath");
-		/*
-		if (path != null && path.Count != 0) {
-			string next_move = path [0];
-			path.RemoveAt (0);
-			Debug.Log ("A: " + next_move);
-			State position = new State (this.gameObject.transform.position);
-			apply_move (next_move, position);
-		} else {*/
-		//		Debug.Log ("B");
-		//Debug.Log ("path: " + path[0]);
+
 		State initial = new State(this.gameObject.transform.position);
 		path = astar.Aalgorithm(initial);
 
