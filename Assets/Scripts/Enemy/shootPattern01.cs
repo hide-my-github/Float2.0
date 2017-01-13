@@ -17,7 +17,6 @@ public class shootPattern01 : MonoBehaviour {
 
 	}
 
-	//FPS
 	void FixedUpdate()
 	{
 		Vector2 max = Camera.main.ViewportToWorldPoint(new Vector2(1, 1));

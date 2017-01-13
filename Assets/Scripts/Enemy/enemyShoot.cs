@@ -28,7 +28,6 @@ public class enemyShoot : MonoBehaviour {
 
             if (nextFire <= 0.0f)
             {
-                //target = GameObject.Find("Player");
 				target = GameObject.Find ("AI");
                 GameObject launchThis = (GameObject)Instantiate(launchPrefab, transform.position, transform.rotation);
                 nextFire = 0.5f;

@@ -23,9 +23,6 @@ public class Astar: MonoBehaviour {
 		}
 	}
 	public AIBehavior AIBehavior;
-	//public State State;
-	//public State newState;
-	//Queue
 	SimplePriorityQueue<Info> frontier;
 
 	public List<string> path;
@@ -61,7 +58,6 @@ public class Astar: MonoBehaviour {
 	float COLLISION_DIST = 1.00f;
 	float GREEDY_HIT = 10000f;
 
-	//List<Collider2D> colliders;
 	int i = 0;
 	int count;
 	// Use this for initialization
@@ -76,8 +72,6 @@ public class Astar: MonoBehaviour {
 		path = new List<string> ();
 		path_maker = new List<string> ();
 
-		//colliders = new Collider2D[300]; //or some large allocation for space
-		//colliders = new List<Collider2D> ();
 		good_moves = new List<string>();
 		good_moves.Add ("moveUpLeft");
 		good_moves.Add ("moveUpRight");
@@ -154,9 +148,7 @@ public class Astar: MonoBehaviour {
 		Info initial = new Info ("", initial_state);
 		frontier.Enqueue(initial, 0);
 		count = 0;
-		//eneList = eneScript.listOfEnemies;
 
-		//while time() - start_time < limit { //if fixed step doesnt properly do what we want
 		while (frontier.Count != 0) {
 
 			count++;
@@ -180,30 +172,15 @@ public class Astar: MonoBehaviour {
 			// 2 exit conditions; one checking for an enemy, another for no enemy in which case, remain in place dodging
 			//Vector2 ene_pos = Enemy.transform.position;
 			Vector2 dodge_pos = transform.position;
-			/*
-			if (current_pos.x == ene_pos.x) {
-				path = creatingPath (current_state, state_name);
-				return path;
-			}
-			*/
 
 			if (steps_so_far[current_state] == 3) {
 				path = creatingPath (current_state, state_name);
 				return path;
 			}
 
-			/*
-			Vector2 dodge_pos = transform.position;
-			if (current_pos == dodge_pos && !Enemy.activeSelf) {
-				Debug.Log ("Path B");
-				path = creatingPath (current_state, state_name);
-				return path;
-			}*/
-			//path.Add(F_name); //gives "" dunno if want
 			//print(current_state)
 			//Debug.Log("good_moves.Count: "+good_moves.Count);
 			for (int i = 0; i < good_moves.Count; i++) {
-				//Debug.Log ("meow");
 				//NEXT = Name, State effected by action, and Time cost
 				action_name = good_moves[i];
 				//Debug.Log (action_name);
@@ -211,7 +188,6 @@ public class Astar: MonoBehaviour {
 				AIBehavior.apply_move(action_name, newState);
 				// Simulate state here
 				//Debug.Log (newState.position);
-				//float distance = Vector2.Distance(newState.position, current_state.position);
 				new_cost = cost_so_far[current_state] + 0.1f;
 
 				float testValue;
@@ -227,11 +203,8 @@ public class Astar: MonoBehaviour {
 			}
 		}
 		frontier.Clear ();
-		//path = creatingPath (current_state, state_name);
-		//Debug.Log("here: "+path[0]);
 		return path;
 	}
-	//Almost like P5
 	private float heuristic(State current, State newState, float ene_position_x, List<GameObject> nearby_bullets, int steps, string action) {
 		float output = 0.0f;
 		int hitCounter = 0;
@@ -242,7 +215,6 @@ public class Astar: MonoBehaviour {
 			output = Vector2.Distance (ai_x, en_x);
 		//Debug.Log ("output: " + output);
 		// Check if hit
-		//for (var i = nearby_enemies.GetEnumerator (); i.MoveNext ();) {
 		for (int i = 0; i < nearby_bullets.Count; i++) {
 			test_ene = nearby_bullets[i];
 			vel = test_ene.GetComponent<Rigidbody2D>().velocity;
@@ -267,12 +239,9 @@ public class Astar: MonoBehaviour {
 
 
 	private List<string> creatingPath(State current, string name) {
-		//		Debug.Log ("HUH?");
 		path_maker.Clear ();
 		string F_name = name;
-		//State F_state = current_state;
 		State F_state = current;
-//		Debug.Log ("New Path");
 		while (came_from[F_state] != null) {
 //			Debug.Log (": " + F_name);
 			path_maker.Add(F_name);
@@ -286,7 +255,6 @@ public class Astar: MonoBehaviour {
 
 	private List<GameObject> keepThreatsIntoList(Vector2 pos, GameObject[] array){
 		List<GameObject> list = new List<GameObject>();
-		//Vector3 v3pos = new Vector3 (pos.x, pos.y, 0);
 		foreach (GameObject bullet in array) {
 			float dist = Vector2.Distance (pos, bullet.transform.position);
 			if (dist <= 5.0f) {
